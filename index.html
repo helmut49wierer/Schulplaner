@@ -403,6 +403,75 @@
             padding: 4px;
         }
 
+        /* Dynamische Zeilen-Container (Nacharbeiten & Fehlzeiten) */
+        .dynamic-rows-container {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.4);
+        }
+        .dynamic-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .dynamic-checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            flex-shrink: 0;
+        }
+        .dynamic-checkbox-label input[type="checkbox"] {
+            display: none;
+        }
+        .custom-dynamic-box {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            background: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, border-color 0.15s;
+            font-size: 0.75rem;
+            color: white;
+            font-weight: bold;
+        }
+        /* Rot-Zustand (Standard / aktiv) */
+        .dynamic-checkbox-label[data-state="red"] .custom-dynamic-box {
+            background: #ef4444;
+            border-color: #b91c1c;
+        }
+        .dynamic-checkbox-label[data-state="red"] .custom-dynamic-box::after {
+            content: "✓";
+        }
+        /* Grün-Zustand */
+        .dynamic-checkbox-label[data-state="green"] .custom-dynamic-box {
+            background: #10b981;
+            border-color: #059669;
+        }
+        .dynamic-checkbox-label[data-state="green"] .custom-dynamic-box::after {
+            content: "✓";
+        }
+        .dynamic-row input[type="text"] {
+            flex-grow: 1;
+            border: none;
+            border-bottom: 1px solid #cbd5e1;
+            padding: 4px 6px;
+            outline: none;
+            font-size: 1.05rem;
+            background: transparent;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .dynamic-row input[type="text"]:focus {
+            border-bottom-color: #3b82f6;
+            background: #f8fafc;
+        }
+
         /* Klassen-Auswertung Styles */
         .class-eval-top-bar {
             display: flex;
@@ -857,8 +926,11 @@
         .box-privat { background: #dcfce7; }
         .box-privat .box-header { background: #bbf7d0; }
 
-        .box-sonst { background: #f1f5f9; }
-        .box-sonst .box-header { background: #e2e8f0; }
+        .box-fehlzeiten { background: #fae8ff; }
+        .box-fehlzeiten .box-header { background: #f5d0fe; }
+
+        .box-nacharbeiten { background: #e0f2fe; }
+        .box-nacharbeiten .box-header { background: #bae6fd; }
 
         .box-idee { background: #ffedd5; }
         .box-idee .box-header { background: #fed7aa; }
@@ -961,6 +1033,71 @@
             font-style: normal;
         }
 
+        /* Spezifisches Layout für die HA-Zeile inklusive Untis-Checkbox rechts */
+        .ha-row-container {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            gap: 10px;
+        }
+        .ha-row-container textarea {
+            flex-grow: 1;
+        }
+        .untis-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+            flex-shrink: 0;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 3px 8px;
+            border-radius: 4px;
+            box-shadow: 1px 1px 0px rgba(44, 62, 80, 0.05);
+        }
+        .untis-checkbox-label input[type="checkbox"] {
+            display: none;
+        }
+        .custom-untis-box {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            background: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s, border-color 0.15s;
+            font-size: 0.7rem;
+            color: white;
+            font-weight: bold;
+        }
+        /* 3-Wege-Zustände (Rot -> Grün -> Weiß) */
+        .untis-checkbox-label[data-state="red"] .custom-untis-box,
+        .badge-checkbox-label[data-state="red"] .custom-badge-box {
+            background: #ef4444;
+            border-color: #b91c1c;
+        }
+        .untis-checkbox-label[data-state="red"] .custom-untis-box::after,
+        .badge-checkbox-label[data-state="red"] .custom-badge-box::after {
+            content: "✓";
+        }
+        
+        .untis-checkbox-label[data-state="green"] .custom-untis-box,
+        .badge-checkbox-label[data-state="green"] .custom-badge-box {
+            background: #10b981;
+            border-color: #059669;
+        }
+        .untis-checkbox-label[data-state="green"] .custom-untis-box::after,
+        .badge-checkbox-label[data-state="green"] .custom-badge-box::after {
+            content: "✓";
+        }
+
         .verteilt-inline-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -977,6 +1114,10 @@
             overflow: hidden;
             box-shadow: 1px 1px 0px rgba(44, 62, 80, 0.05);
         }
+        /* Speziell für das breitere "Praxisset" (PraSet) Feld */
+        .verteilt-group-wide {
+            grid-column: span 2;
+        }
         .verteilt-badge-box {
             background: #dbeafe;
             border-right: 1px solid #64748b;
@@ -986,6 +1127,39 @@
             color: #1e40af;
             text-align: center;
             min-width: 45px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.15s, color 0.15s;
+        }
+        .verteilt-badge-box:hover { filter: brightness(0.96); }
+        /* 3-Wege-Zustände: Ursprung (blau) -> Rot -> Grün -> Ursprung */
+        .verteilt-badge-box[data-state="red"] {
+            background: #ef4444;
+            color: #ffffff;
+        }
+        .verteilt-badge-box[data-state="green"] {
+            background: #10b981;
+            color: #ffffff;
+        }
+
+        /* Box "Das ist mein Tag!" */
+        .box-meintag { background: #fef9c3; }
+        .box-meintag .box-header { background: #fde68a; }
+        .meintag-content {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.4);
+            font-size: 1.05rem;
+        }
+        .meintag-item {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .meintag-placeholder {
+            color: #94a3b8;
+            font-style: italic;
         }
         .verteilt-group input[type="text"] {
             width: 100%;
@@ -1028,13 +1202,6 @@
             font-size: 0.7rem;
             color: white;
             font-weight: bold;
-        }
-        .badge-checkbox-label input[type="checkbox"]:checked + .custom-badge-box {
-            background: #10b981;
-            border-color: #059669;
-        }
-        .badge-checkbox-label input[type="checkbox"]:checked + .custom-badge-box::after {
-            content: "✓";
         }
 
         .klasse-badges-row {
@@ -1210,7 +1377,6 @@
                 border-left: none !important;
                 padding-left: 0 !important;
             }
-            /* Wenn ein spezifischer Druck aktiv ist, blenden wir alle Klassen bis auf die ausgewählte aus */
             body.print-single-class .klasse-card:not(.printing-active) {
                 display: none !important;
             }
@@ -1249,12 +1415,11 @@
                 width: 25% !important;
                 vertical-align: top !important;
             }
-            .class-slot-mini, .weekly-prep-box, .klasse-card {
+            .class-slot-mini, .weekly-prep-box, .klasse-card, .verteilt-badge-box {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
             
-            /* GLOBALER DATUMS-DRUCK-BANNER GANZ OBEN */
             .print-date-header {
                 display: block !important;
                 font-weight: bold;
@@ -1277,7 +1442,6 @@
             }
         }
         
-        /* Standardmäßig im Bildschirmmodus unsichtbar, ploppt beim Drucken auf */
         .print-date-header {
             display: none;
         }
@@ -1286,7 +1450,6 @@
 <body>
 
 <div class="container" id="mainContainer">
-    <!-- Immer ganz oben im Ausdruck sichtbar -->
     <div class="print-date-header" id="printDateHeader">Datum: --</div>
 
     <!-- Header -->
@@ -1355,6 +1518,13 @@
     <div id="viewDay" class="app-view active-view">
         <div class="main-grid">
             <div class="left-column">
+                <div class="box-card box-meintag">
+                    <div class="box-header">Das ist mein Tag!</div>
+                    <div class="meintag-content" id="meinTagContainer">
+                        <div class="meintag-placeholder">Noch keine Lernziele eingetragen...</div>
+                    </div>
+                </div>
+
                 <div class="box-card box-vorbereiten">
                     <div class="box-header">Vorbereiten</div>
                     <div class="vorbereiten-content-area">
@@ -1367,6 +1537,20 @@
                     </div>
                 </div>
 
+                <div class="box-card box-fehlzeiten">
+                    <div class="box-header">Fehlzeiten</div>
+                    <div class="dynamic-rows-container" id="fehlzeitenContainer">
+                        <!-- Wird per JS dynamisch generiert -->
+                    </div>
+                </div>
+
+                <div class="box-card box-nacharbeiten">
+                    <div class="box-header">Nacharbeiten</div>
+                    <div class="dynamic-rows-container" id="nacharbeitenContainer">
+                        <!-- Wird per JS dynamisch generiert -->
+                    </div>
+                </div>
+
                 <div class="box-card box-mitnehmen">
                     <div class="box-header">Mitnehmen</div>
                     <textarea data-field="mitnehmen" placeholder="Materialien, Unterlagen..."></textarea>
@@ -1375,11 +1559,6 @@
                 <div class="box-card box-privat">
                     <div class="box-header">Privat</div>
                     <textarea data-field="privat" placeholder="Erledigungen, Termine..."></textarea>
-                </div>
-
-                <div class="box-card box-sonst">
-                    <div class="box-header">Sonst</div>
-                    <textarea data-field="sonst" placeholder="Sonstige Notizen..."></textarea>
                 </div>
 
                 <div class="box-card box-idee">
@@ -1477,7 +1656,7 @@
         
         <div class="class-eval-filters-row">
             <button class="eval-filter-btn active" data-filter="alle" onclick="toggleEvalFilter('alle', this)">ALLE</button>
-            <button class="eval-filter-btn" data-filter="gemacht" onclick="toggleEvalFilter('gemacht', this)">Gemacht</button>
+            <button class="eval-filter-btn" data-filter="lernziel" onclick="toggleEvalFilter('lernziel', this)">Lernziel</button>
             <button class="eval-filter-btn" data-filter="verteilt" onclick="toggleEvalFilter('verteilt', this)">Verteilt</button>
             <button class="eval-filter-btn" data-filter="vorb" onclick="toggleEvalFilter('vorb', this)">Vorbereiten</button>
             <button class="eval-filter-btn" data-filter="ha" onclick="toggleEvalFilter('ha', this)">HA</button>
@@ -1493,7 +1672,7 @@
         </div>
     </div>
     
-    <div class="save-hint">Eingaben & Checkboxen werden lokal & automatisch in der Cloud synchronisiert.</div>
+    <div class="save-hint">Eingaben & Tickerkästchen werden lokal & automatisch in der Cloud synchronisiert.</div>
 </div>
 
 <!-- Modal für Einstellungen -->
@@ -1529,7 +1708,7 @@
             <label for="searchCategory">Kategorie filtern:</label>
             <select id="searchCategory">
                 <option value="all">Alle Bereiche (Verteilt & Kapitel)</option>
-                <option value="verteilt">Nur "Verteilt" (Skript, SoBI, LN, Pra)</option>
+                <option value="verteilt">Nur "Verteilt" (Skript, SoBI, LN, Pra, PraSet)</option>
                 <option value="chapter">Nur Kapitel-Tabelle</option>
             </select>
         </div>
@@ -1561,33 +1740,43 @@
                     <textarea data-field="klasse_vorstunde_${i}" rows="1" placeholder="Automatisch..." title="Aus letzter Stunde übernommen"></textarea>
                 </div>
                 <div class="line-row">
-                    <span class="line-label">Gemacht</span>
+                    <span class="line-label">Lernziel</span>
                     <textarea data-field="klasse_gemacht_${i}" rows="1" placeholder="..."></textarea>
                 </div>
                 <div class="line-row">
                     <span class="line-label">Verteilt</span>
                     <div class="verteilt-inline-container">
                         <div class="verteilt-group">
-                            <span class="verteilt-badge-box">Skript</span>
+                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_skript_${i}" title="Klicken: blau → rot → grün → blau">Skript</span>
                             <input type="text" data-verteilt-field="verteilt_skript_${i}" placeholder="...">
                         </div>
                         <div class="verteilt-group">
-                            <span class="verteilt-badge-box">SoBI</span>
+                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_sobl_${i}" title="Klicken: blau → rot → grün → blau">SoBI</span>
                             <input type="text" data-verteilt-field="verteilt_sobl_${i}" placeholder="...">
                         </div>
                         <div class="verteilt-group">
-                            <span class="verteilt-badge-box">LN</span>
+                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_ln_${i}" title="Klicken: blau → rot → grün → blau">LN</span>
                             <input type="text" data-verteilt-field="verteilt_ln_${i}" placeholder="...">
                         </div>
                         <div class="verteilt-group">
-                            <span class="verteilt-badge-box">Pra</span>
+                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_pra_${i}" title="Klicken: blau → rot → grün → blau">Pra</span>
                             <input type="text" data-verteilt-field="verteilt_pra_${i}" placeholder="...">
+                        </div>
+                        <div class="verteilt-group verteilt-group-wide">
+                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_praset_${i}" title="Klicken: blau → rot → grün → blau">PraSet</span>
+                            <input type="text" data-verteilt-field="verteilt_praset_${i}" placeholder="Praxisset...">
                         </div>
                     </div>
                 </div>
                 <div class="line-row">
                     <span class="line-label">HA</span>
-                    <textarea data-field="klasse_ha_${i}" rows="1" placeholder="..."></textarea>
+                    <div class="ha-row-container">
+                        <textarea data-field="klasse_ha_${i}" rows="1" placeholder="..."></textarea>
+                        <label class="untis-checkbox-label" data-state="off" title="In Untis eingetragen? (Klicken zum Wechseln)">
+                            <input type="checkbox" data-untis-field="untis_ha_${i}">
+                            <span class="custom-untis-box"></span> Untis
+                        </label>
+                    </div>
                 </div>
                 <div class="line-row">
                     <span class="line-label">Ablauf-EES</span>
@@ -1599,23 +1788,23 @@
                 </div>
                 <div class="klasse-badges-row">
                     <div class="klasse-badges-left">
-                        <label class="badge-checkbox-label">
+                        <label class="badge-checkbox-label" data-state="off">
                             <input type="checkbox" data-badge-field="badge_ln_${i}">
                             <span class="custom-badge-box"></span> LN
                         </label>
-                        <label class="badge-checkbox-label">
+                        <label class="badge-checkbox-label" data-state="off">
                             <input type="checkbox" data-badge-field="badge_gra_${i}">
                             <span class="custom-badge-box"></span> GrA
                         </label>
-                        <label class="badge-checkbox-label">
+                        <label class="badge-checkbox-label" data-state="off">
                             <input type="checkbox" data-badge-field="badge_sol_${i}">
                             <span class="custom-badge-box"></span> SoL
                         </label>
-                        <label class="badge-checkbox-label">
+                        <label class="badge-checkbox-label" data-state="off">
                             <input type="checkbox" data-badge-field="badge_vid_${i}">
                             <span class="custom-badge-box"></span> Vid
                         </label>
-                        <label class="badge-checkbox-label">
+                        <label class="badge-checkbox-label" data-state="off">
                             <input type="checkbox" data-badge-field="badge_ha_${i}">
                             <span class="custom-badge-box"></span> HA
                         </label>
@@ -1680,7 +1869,10 @@
     const mainContainer = document.getElementById('mainContainer');
     const allFields = document.querySelectorAll('[data-field]');
     const allBadgeFields = document.querySelectorAll('[data-badge-field]');
+    const allUntisFields = document.querySelectorAll('[data-untis-field]');
     const allVerteiltFields = document.querySelectorAll('[data-verteilt-field]');
+    const allVerteiltBadges = document.querySelectorAll('[data-verteilt-badge]');
+    const meinTagContainer = document.getElementById('meinTagContainer');
     const allExtraFields = document.querySelectorAll('[data-extra-field]');
     
     const allChapterTitles = document.querySelectorAll('[data-chapter-title]');
@@ -1692,6 +1884,8 @@
 
     const autoTasksContainer = document.getElementById('autoTasksContainer');
     const monatstermineList = document.getElementById('monatstermineList');
+    const nacharbeitenContainer = document.getElementById('nacharbeitenContainer');
+    const fehlzeitenContainer = document.getElementById('fehlzeitenContainer');
     
     const emojiTrigger = document.getElementById('emojiTrigger');
     const emojiMenu = document.getElementById('emojiMenu');
@@ -1744,7 +1938,6 @@
         renderClassEvalView();
     }
 
-    // Funktion zum Drucken einer einzelnen Klasse
     function printSingleClass(klasseIdx) {
         const cards = document.querySelectorAll('.klasse-card');
         cards.forEach(card => card.classList.remove('printing-active'));
@@ -1776,6 +1969,55 @@
         let yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
         let weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
         return { year: d.getUTCFullYear(), week: weekNo };
+    }
+
+    // Wetter-Funktion
+    function loadWeather() {
+        if (!navigator.geolocation) {
+            fetchWeather(48.2913, 10.9575); // Fallback Kissing
+            return;
+        }
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                fetchWeather(position.coords.latitude, position.coords.longitude);
+            },
+            () => {
+                fetchWeather(48.2913, 10.9575); // Fallback bei Ablehnung
+            },
+            { timeout: 10000 }
+        );
+    }
+
+    function fetchWeather(lat, lon) {
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.current) {
+                    const temp = Math.round(data.current.temperature_2m);
+                    const hum = data.current.relative_humidity_2m;
+                    const wind = data.current.wind_speed_10m;
+                    const code = data.current.weather_code;
+
+                    document.getElementById('wTemp').innerText = `${temp} °C`;
+                    document.getElementById('wHum').innerText = `Feuchtigkeit: ${hum}%`;
+                    document.getElementById('wWind').innerText = `Wind: ${wind} km/h`;
+
+                    let icon = '☀️';
+                    let text = 'Sonnig';
+                    if (code >= 1 && code <= 3) { icon = '⛅'; text = 'Teils bewölkt'; }
+                    else if (code >= 45 && code <= 48) { icon = '🌫️'; text = 'Neblig'; }
+                    else if (code >= 51 && code <= 67) { icon = '🌧️'; text = 'Regen'; }
+                    else if (code >= 71 && code <= 77) { icon = '❄️'; text = 'Schnee'; }
+                    else if (code >= 80 && code <= 82) { icon = '🌦️'; text = 'Schauer'; }
+                    else if (code >= 95) { icon = '⛈️️'; text = 'Gewitter'; }
+
+                    document.getElementById('wIcon').innerText = icon;
+                    document.getElementById('wRain').innerText = text;
+                }
+            })
+            .catch(() => {
+                document.getElementById('wRain').innerText = 'Wetter offline';
+            });
     }
 
     function switchAppView(viewName) {
@@ -2190,6 +2432,29 @@
         }
     }
 
+    function updateMeinTag() {
+        meinTagContainer.innerHTML = '';
+        let hasItems = false;
+        for (let i = 1; i <= numKlassen; i++) {
+            const nameField = document.querySelector(`[data-field="klasse_name_${i}"]`);
+            const lernzielField = document.querySelector(`[data-field="klasse_gemacht_${i}"]`);
+            if (lernzielField && lernzielField.value.trim() !== '') {
+                hasItems = true;
+                const className = nameField && nameField.value.trim() !== '' ? nameField.value.trim() : `Kl. ${i}`;
+                const item = document.createElement('div');
+                item.className = 'meintag-item';
+                const strong = document.createElement('strong');
+                strong.textContent = className + ': ';
+                item.appendChild(strong);
+                item.appendChild(document.createTextNode(lernzielField.value.trim()));
+                meinTagContainer.appendChild(item);
+            }
+        }
+        if (!hasItems) {
+            meinTagContainer.innerHTML = '<div class="meintag-placeholder">Noch keine Lernziele eingetragen...</div>';
+        }
+    }
+
     function updateAutoTasks() {
         autoTasksContainer.innerHTML = '';
         let hasItems = false;
@@ -2200,9 +2465,9 @@
             const key = localStorage.key(i);
             if (key && key.startsWith('planer_') && key.includes('_klasse_vorb_')) {
                 const parts = key.split('_');
-                if (parts.length >= 4) {
+                if (parts.length >= 5) {
                     const taskDate = parts[1];
-                    const klasseIdx = parts[3];
+                    const klasseIdx = parts[parts.length - 1];
                     
                     if (taskDate < currentDateStr) {
                         const taskText = localStorage.getItem(key);
@@ -2430,35 +2695,39 @@
                     let gemachtVal = localStorage.getItem(`planer_${dateStr}_klasse_gemacht_${i}`) || '';
                     let vorbVal = localStorage.getItem(`planer_${dateStr}_klasse_vorb_${i}`) || '';
                     let haVal = localStorage.getItem(`planer_${dateStr}_klasse_ha_${i}`) || '';
+                    let untisState = localStorage.getItem(`planer_${dateStr}_untis_ha_${i}`) || 'off';
                     let ablaufeesVal = localStorage.getItem(`planer_${dateStr}_klasse_ablaufees_${i}`) || '';
                     
                     let verteiltSkript = localStorage.getItem(`planer_${dateStr}_verteilt_skript_${i}`) || '';
                     let verteiltSobl = localStorage.getItem(`planer_${dateStr}_verteilt_sobl_${i}`) || '';
                     let verteiltLn = localStorage.getItem(`planer_${dateStr}_verteilt_ln_${i}`) || '';
                     let verteiltPra = localStorage.getItem(`planer_${dateStr}_verteilt_pra_${i}`) || '';
+                    let verteiltPraset = localStorage.getItem(`planer_${dateStr}_verteilt_praset_${i}`) || '';
 
-                    let badgeLn = localStorage.getItem(`planer_${dateStr}_badge_ln_${i}`) === 'true';
-                    let badgeGra = localStorage.getItem(`planer_${dateStr}_badge_gra_${i}`) === 'true';
-                    let badgeSol = localStorage.getItem(`planer_${dateStr}_badge_sol_${i}`) === 'true';
-                    let badgeVid = localStorage.getItem(`planer_${dateStr}_badge_vid_${i}`) === 'true';
-                    let badgeHa = localStorage.getItem(`planer_${dateStr}_badge_ha_${i}`) === 'true';
+                    let badgeLnState = localStorage.getItem(`planer_${dateStr}_badge_ln_${i}`) || 'off';
+                    let badgeGraState = localStorage.getItem(`planer_${dateStr}_badge_gra_${i}`) || 'off';
+                    let badgeSolState = localStorage.getItem(`planer_${dateStr}_badge_sol_${i}`) || 'off';
+                    let badgeVidState = localStorage.getItem(`planer_${dateStr}_badge_vid_${i}`) || 'off';
+                    let badgeHaState = localStorage.getItem(`planer_${dateStr}_badge_ha_${i}`) || 'off';
                     let extraInput = localStorage.getItem(`planer_${dateStr}_extra_input_${i}`) || '';
 
-                    if (gemachtVal.trim() || vorbVal.trim() || haVal.trim() || ablaufeesVal.trim() || verteiltSkript.trim() || verteiltSobl.trim() || verteiltLn.trim() || verteiltPra.trim() || badgeLn || badgeGra || badgeSol || badgeVid || badgeHa || extraInput.trim()) {
+                    let hasBadges = badgeLnState !== 'off' || badgeGraState !== 'off' || badgeSolState !== 'off' || badgeVidState !== 'off' || badgeHaState !== 'off';
+
+                    if (gemachtVal.trim() || vorbVal.trim() || haVal.trim() || untisState !== 'off' || ablaufeesVal.trim() || verteiltSkript.trim() || verteiltSobl.trim() || verteiltLn.trim() || verteiltPra.trim() || verteiltPraset.trim() || hasBadges || extraInput.trim()) {
                         
                         let includeItem = false;
                         if (activeEvalFilters.has('alle')) {
                             includeItem = true;
                         } else {
-                            if (activeEvalFilters.has('gemacht') && gemachtVal.trim()) includeItem = true;
-                            if (activeEvalFilters.has('verteilt') && (verteiltSkript.trim() || verteiltSobl.trim() || verteiltLn.trim() || verteiltPra.trim())) includeItem = true;
+                            if (activeEvalFilters.has('lernziel') && gemachtVal.trim()) includeItem = true;
+                            if (activeEvalFilters.has('verteilt') && (verteiltSkript.trim() || verteiltSobl.trim() || verteiltLn.trim() || verteiltPra.trim() || verteiltPraset.trim())) includeItem = true;
                             if (activeEvalFilters.has('vorb') && vorbVal.trim()) includeItem = true;
-                            if (activeEvalFilters.has('ha') && haVal.trim()) includeItem = true;
+                            if (activeEvalFilters.has('ha') && (haVal.trim() || untisState !== 'off' || badgeHaState !== 'off')) includeItem = true;
                             if (activeEvalFilters.has('ablaufees') && ablaufeesVal.trim()) includeItem = true;
-                            if (activeEvalFilters.has('ln') && badgeLn) includeItem = true;
-                            if (activeEvalFilters.has('gra') && badgeGra) includeItem = true;
-                            if (activeEvalFilters.has('sol') && badgeSol) includeItem = true;
-                            if (activeEvalFilters.has('vid') && badgeVid) includeItem = true;
+                            if (activeEvalFilters.has('ln') && (badgeLnState !== 'off' || verteiltLn.trim())) includeItem = true;
+                            if (activeEvalFilters.has('gra') && badgeGraState !== 'off') includeItem = true;
+                            if (activeEvalFilters.has('sol') && badgeSolState !== 'off') includeItem = true;
+                            if (activeEvalFilters.has('vid') && badgeVidState !== 'off') includeItem = true;
                         }
 
                         if (includeItem) {
@@ -2471,7 +2740,7 @@
 
                             let classBucket = classDataMap.get(displayClassName);
 
-                            if (gemachtVal.trim() && (activeEvalFilters.has('alle') || activeEvalFilters.has('gemacht'))) {
+                            if (gemachtVal.trim() && (activeEvalFilters.has('alle') || activeEvalFilters.has('lernziel'))) {
                                 classBucket.gemacht.push({ dateStr, formattedDate, text: gemachtVal });
                             }
 
@@ -2480,6 +2749,7 @@
                             if (verteiltSobl.trim()) verteilteTeile.push(`SoBI: ${verteiltSobl}`);
                             if (verteiltLn.trim()) verteilteTeile.push(`LN: ${verteiltLn}`);
                             if (verteiltPra.trim()) verteilteTeile.push(`Pra: ${verteiltPra}`);
+                            if (verteiltPraset.trim()) verteilteTeile.push(`PraSet: ${verteiltPraset}`);
                             if (verteilteTeile.length > 0 && (activeEvalFilters.has('alle') || activeEvalFilters.has('verteilt'))) {
                                 classBucket.verteilt.push({ dateStr, formattedDate, text: verteilteTeile.join(' | ') });
                             }
@@ -2488,8 +2758,12 @@
                                 classBucket.vorb.push({ dateStr, formattedDate, text: vorbVal });
                             }
 
-                            if (haVal.trim() && (activeEvalFilters.has('alle') || activeEvalFilters.has('ha'))) {
-                                classBucket.ha.push({ dateStr, formattedDate, text: haVal });
+                            if ((haVal.trim() || untisState !== 'off' || badgeHaState !== 'off') && (activeEvalFilters.has('alle') || activeEvalFilters.has('ha'))) {
+                                let haText = haVal.trim();
+                                if (untisState === 'red') haText += (haText ? ' ' : '') + '(🔴 Untis)';
+                                if (untisState === 'green') haText += (haText ? ' ' : '') + '(🟢 Untis)';
+                                if (badgeHaState !== 'off') haText += (haText ? ' ' : '') + `(HA Check: ${badgeHaState.toUpperCase()})`;
+                                classBucket.ha.push({ dateStr, formattedDate, text: haText });
                             }
 
                             if (ablaufeesVal.trim() && (activeEvalFilters.has('alle') || activeEvalFilters.has('ablaufees'))) {
@@ -2497,20 +2771,18 @@
                             }
 
                             let badgesArr = [];
-                            if (badgeLn) badgesArr.push('LN');
-                            if (badgeGra) badgesArr.push('GrA');
-                            if (badgeSol) badgesArr.push('SoL');
-                            if (badgeVid) badgesArr.push('Vid');
-                            if (badgeHa) badgesArr.push('HA');
+                            if (badgeLnState !== 'off') badgesArr.push(`LN (${badgeLnState.toUpperCase()})`);
+                            if (badgeGraState !== 'off') badgesArr.push(`GrA (${badgeGraState.toUpperCase()})`);
+                            if (badgeSolState !== 'off') badgesArr.push(`SoL (${badgeSolState.toUpperCase()})`);
+                            if (badgeVidState !== 'off') badgesArr.push(`Vid (${badgeVidState.toUpperCase()})`);
                             if (extraInput.trim()) badgesArr.push(extraInput);
 
                             if (badgesArr.length > 0) {
                                 let matchBadgeFilter = activeEvalFilters.has('alle') || 
-                                    (activeEvalFilters.has('ln') && badgeLn) ||
-                                    (activeEvalFilters.has('gra') && badgeGra) ||
-                                    (activeEvalFilters.has('sol') && badgeSol) ||
-                                    (activeEvalFilters.has('vid') && badgeVid) ||
-                                    (activeEvalFilters.has('ha') && badgeHa);
+                                    (activeEvalFilters.has('ln') && badgeLnState !== 'off') ||
+                                    (activeEvalFilters.has('gra') && badgeGraState !== 'off') ||
+                                    (activeEvalFilters.has('sol') && badgeSolState !== 'off') ||
+                                    (activeEvalFilters.has('vid') && badgeVidState !== 'off');
                                 
                                 if (matchBadgeFilter) {
                                     classBucket.sonstige.push({ dateStr, formattedDate, text: `Markierungen: ${badgesArr.join(', ')}` });
@@ -2540,7 +2812,7 @@
             groupCard.appendChild(groupHeader);
 
             const categoryConfigs = [
-                { key: 'gemacht', title: 'Gemacht', bg: '#eff6ff' },
+                { key: 'gemacht', title: 'Lernziel', bg: '#eff6ff' },
                 { key: 'verteilt', title: 'Verteilt', bg: '#fef3c7' },
                 { key: 'ha', title: 'HA', bg: '#ecfdf5' },
                 { key: 'ablaufees', title: 'Ablauf-EES', bg: '#fef08a' },
@@ -2583,24 +2855,34 @@
         });
     }
 
-    const classColorThemes = [
-        { bg: '#fdf2f4', border: '#e11d48' },
-        { bg: '#fef9c3', border: '#ca8a04' },
-        { bg: '#f0fdf4', border: '#16a34a' },
-        { bg: '#eff6ff', border: '#2563eb' },
-        { bg: '#fdf4ff', border: '#c084fc' },
-        { bg: '#ffedd5', border: '#ea580c' },
-    ];
-
     function getThemeForClassName(className) {
-        if (!className || !className.trim()) return classColorThemes[0];
+        if (!className || !className.trim()) {
+            return { bg: '#f1f5f9', border: '#64748b' };
+        }
         const clean = className.trim().toLowerCase();
+
+        if (clean.includes('et26a')) {
+            return { bg: '#eff6ff', border: '#2563eb' };
+        } else if (clean.includes('et26b')) {
+            return { bg: '#fdf4ff', border: '#c084fc' };
+        } else if (clean.includes('etd26')) {
+            return { bg: '#fef2f4', border: '#e11d48' };
+        } else if (clean.includes('ut26')) {
+            return { bg: '#f0fdf4', border: '#16a34a' };
+        } else if (clean.includes('mtd26')) {
+            return { bg: '#ffedd5', border: '#ea580c' };
+        }
+
         let hash = 0;
         for (let i = 0; i < clean.length; i++) {
             hash = clean.charCodeAt(i) + ((hash << 5) - hash);
         }
-        const index = Math.abs(hash) % classColorThemes.length;
-        return classColorThemes[index];
+        const fallbackThemes = [
+            { bg: '#fdf9c3', border: '#ca8a04' },
+            { bg: '#ecfeff', border: '#0891b2' },
+            { bg: '#faf5ff', border: '#9333ea' }
+        ];
+        return fallbackThemes[Math.abs(hash) % fallbackThemes.length];
     }
 
     function renderWeekView() {
@@ -2665,6 +2947,7 @@
             let vorstundeKey = `planer_${dateStr}_klasse_vorstunde_${i}`;
             let gemachtKey = `planer_${dateStr}_klasse_gemacht_${i}`;
             let haKey = `planer_${dateStr}_klasse_ha_${i}`;
+            let untisState = localStorage.getItem(`planer_${dateStr}_untis_ha_${i}`) || 'off';
             let ablaufeesKey = `planer_${dateStr}_klasse_ablaufees_${i}`;
             
             let klName = localStorage.getItem(nameKey) || '';
@@ -2677,23 +2960,45 @@
             let verteiltSobl = localStorage.getItem(`planer_${dateStr}_verteilt_sobl_${i}`) || '';
             let verteiltLn = localStorage.getItem(`planer_${dateStr}_verteilt_ln_${i}`) || '';
             let verteiltPra = localStorage.getItem(`planer_${dateStr}_verteilt_pra_${i}`) || '';
+            let verteiltPraset = localStorage.getItem(`planer_${dateStr}_verteilt_praset_${i}`) || '';
 
-            if (klName.trim() || gemachtVal.trim() || vorstundeVal.trim() || haVal.trim() || ablaufeesVal.trim() || verteiltSkript.trim() || verteiltSobl.trim() || verteiltLn.trim() || verteiltPra.trim()) {
+            let badgeLnState = localStorage.getItem(`planer_${dateStr}_badge_ln_${i}`) || 'off';
+            let badgeGraState = localStorage.getItem(`planer_${dateStr}_badge_gra_${i}`) || 'off';
+            let badgeSolState = localStorage.getItem(`planer_${dateStr}_badge_sol_${i}`) || 'off';
+            let badgeVidState = localStorage.getItem(`planer_${dateStr}_badge_vid_${i}`) || 'off';
+            let badgeHaState = localStorage.getItem(`planer_${dateStr}_badge_ha_${i}`) || 'off';
+
+            let hasBadges = badgeLnState !== 'off' || badgeGraState !== 'off' || badgeSolState !== 'off' || badgeVidState !== 'off' || badgeHaState !== 'off';
+
+            if (klName.trim() || gemachtVal.trim() || vorstundeVal.trim() || haVal.trim() || untisState !== 'off' || ablaufeesVal.trim() || verteiltSkript.trim() || verteiltSobl.trim() || verteiltLn.trim() || verteiltPra.trim() || verteiltPraset.trim() || hasBadges) {
                 hasContent = true;
                 const theme = getThemeForClassName(klName);
                 
+                let haDisplay = haVal.trim();
+                if (untisState === 'red') haDisplay += (haDisplay ? ' ' : '') + '🔴 Untis';
+                if (untisState === 'green') haDisplay += (haDisplay ? ' ' : '') + '🟢 Untis';
+
+                let badgeDisplayParts = [];
+                if (badgeLnState !== 'off') badgeDisplayParts.push(`LN(${badgeLnState.toUpperCase()})`);
+                if (badgeGraState !== 'off') badgeDisplayParts.push(`GrA(${badgeGraState.toUpperCase()})`);
+                if (badgeSolState !== 'off') badgeDisplayParts.push(`SoL(${badgeSolState.toUpperCase()})`);
+                if (badgeVidState !== 'off') badgeDisplayParts.push(`Vid(${badgeVidState.toUpperCase()})`);
+                if (badgeHaState !== 'off') badgeDisplayParts.push(`HA(${badgeHaState.toUpperCase()})`);
+
                 htmlContent += `
-                    <div class="class-slot-mini" style="background-color: ${theme.bg}; border-left: 4px solid ${theme.border};">
-                        <div class="class-slot-title">${klName.trim() || 'Kl. ' + i}</div>
+                    <div class="class-slot-mini" style="background-color: ${theme.bg}; border-left: 5px solid ${theme.border};">
+                        <div class="class-slot-title" style="color: ${theme.border};">${klName.trim() || 'Kl. ' + i}</div>
                         <div class="class-slot-content">
                             ${vorstundeVal.trim() ? `<div><strong>Vorstunde:</strong> ${vorstundeVal}</div>` : ''}
-                            ${gemachtVal.trim() ? `<div><strong>Gemacht:</strong> ${gemachtVal}</div>` : ''}
-                            ${haVal.trim() ? `<div><strong>HA:</strong> ${haVal}</div>` : ''}
+                            ${gemachtVal.trim() ? `<div><strong>Lernziel:</strong> ${gemachtVal}</div>` : ''}
+                            ${haDisplay ? `<div><strong>HA:</strong> ${haDisplay}</div>` : ''}
                             ${ablaufeesVal.trim() ? `<div><strong>Ablauf-EES:</strong> ${ablaufeesVal}</div>` : ''}
                             ${verteiltSkript.trim() ? `<div><strong>Skript:</strong> ${verteiltSkript}</div>` : ''}
                             ${verteiltSobl.trim() ? `<div><strong>SoBI:</strong> ${verteiltSobl}</div>` : ''}
                             ${verteiltLn.trim() ? `<div><strong>LN:</strong> ${verteiltLn}</div>` : ''}
                             ${verteiltPra.trim() ? `<div><strong>Pra:</strong> ${verteiltPra}</div>` : ''}
+                            ${verteiltPraset.trim() ? `<div><strong>PraSet:</strong> ${verteiltPraset}</div>` : ''}
+                            ${badgeDisplayParts.length > 0 ? `<div><strong>Markierungen:</strong> ${badgeDisplayParts.join(', ')}</div>` : ''}
                         </div>
                     </div>
                 `;
@@ -2758,6 +3063,136 @@
         }
     }
 
+    function getPreviousDateStr(currentDateStr) {
+        let allDates = new Set();
+        for (let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            if (key && key.startsWith('planer_')) {
+                let parts = key.split('_');
+                if (parts.length >= 2 && parts[1].length === 10) {
+                    allDates.add(parts[1]);
+                }
+            }
+        }
+        let sortedDates = Array.from(allDates).sort();
+        let prevDate = '';
+        for (let d of sortedDates) {
+            if (d < currentDateStr) {
+                prevDate = d;
+            } else {
+                break;
+            }
+        }
+        return prevDate;
+    }
+
+    // Generische Funktion für dynamische Zeilenboxen (Nacharbeiten & Fehlzeiten)
+    function renderDynamicRows(dateStr, boxType, containerElement) {
+        containerElement.innerHTML = '';
+        
+        let hasLocalStorageData = false;
+        for (let i = 1; i <= 50; i++) {
+            if (localStorage.getItem(`planer_${dateStr}_${boxType}_text_${i}`) !== null) {
+                hasLocalStorageData = true;
+                break;
+            }
+        }
+
+        if (!hasLocalStorageData) {
+            let prevDateStr = getPreviousDateStr(dateStr);
+            if (prevDateStr) {
+                let openTasks = [];
+                for (let i = 1; i <= 50; i++) {
+                    let text = localStorage.getItem(`planer_${prevDateStr}_${boxType}_text_${i}`);
+                    let state = localStorage.getItem(`planer_${prevDateStr}_${boxType}_state_${i}`) || 'red';
+                    
+                    if (text && text.trim() !== '') {
+                        if (state !== 'green') {
+                            openTasks.push({ text: text.trim(), state: state });
+                        }
+                    }
+                }
+
+                if (openTasks.length > 0) {
+                    openTasks.forEach((task, index) => {
+                        let rIndex = index + 1;
+                        localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, task.text);
+                        localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, task.state);
+                    });
+                }
+            }
+        }
+
+        let maxRow = 1;
+        for (let i = 1; i <= 50; i++) {
+            if (localStorage.getItem(`planer_${dateStr}_${boxType}_text_${i}`)) {
+                if (i > maxRow) maxRow = i;
+            }
+        }
+
+        for (let r = 1; r <= maxRow; r++) {
+            appendDynamicRow(dateStr, boxType, containerElement, r);
+        }
+    }
+
+    function appendDynamicRow(dateStr, boxType, containerElement, rIndex) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'dynamic-row';
+        rowDiv.setAttribute('data-row-id', rIndex);
+
+        const textVal = localStorage.getItem(`planer_${dateStr}_${boxType}_text_${rIndex}`) || '';
+        const stateVal = localStorage.getItem(`planer_${dateStr}_${boxType}_state_${rIndex}`) || 'red';
+
+        rowDiv.innerHTML = `
+            <label class="dynamic-checkbox-label" data-state="${stateVal}" title="Klicken zum Umschalten (Rot / Grün / Aus)">
+                <input type="checkbox" ${stateVal !== 'off' ? 'checked' : ''}>
+                <span class="custom-dynamic-box"></span>
+            </label>
+            <input type="text" data-dynamic-type="${boxType}" data-dynamic-index="${rIndex}" value="${textVal}" placeholder="Eintrag...">
+        `;
+
+        const inputEl = rowDiv.querySelector('input[type="text"]');
+        const labelEl = rowDiv.querySelector('.dynamic-checkbox-label');
+        const checkboxEl = rowDiv.querySelector('input[type="checkbox"]');
+
+        inputEl.addEventListener('input', () => {
+            localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, inputEl.value);
+            triggerAutoSync();
+        });
+
+        inputEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const allRows = containerElement.querySelectorAll('.dynamic-row');
+                const nextRowIdx = allRows.length + 1;
+                appendDynamicRow(dateStr, boxType, containerElement, nextRowIdx);
+                const nextInput = containerElement.querySelector(`[data-dynamic-type="${boxType}"][data-dynamic-index="${nextRowIdx}"]`);
+                if (nextInput) nextInput.focus();
+            }
+        });
+
+        labelEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            let currentState = labelEl.getAttribute('data-state') || 'red';
+            let nextState = 'red';
+
+            if (currentState === 'red') {
+                nextState = 'green';
+            } else if (currentState === 'green') {
+                nextState = 'off';
+            } else {
+                nextState = 'red';
+            }
+
+            labelEl.setAttribute('data-state', nextState);
+            checkboxEl.checked = (nextState !== 'off');
+            localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, nextState);
+            triggerAutoSync();
+        });
+
+        containerElement.appendChild(rowDiv);
+    }
+
     function loadDataForDate(dateStr) {
         allFields.forEach(field => {
             const fieldKey = field.getAttribute('data-field');
@@ -2770,16 +3205,34 @@
             }
         });
 
+        renderDynamicRows(dateStr, 'nacharbeiten', nacharbeitenContainer);
+        renderDynamicRows(dateStr, 'fehlzeiten', fehlzeitenContainer);
+
         allBadgeFields.forEach(badge => {
             const badgeKey = badge.getAttribute('data-badge-field');
             const storageKey = `planer_${dateStr}_${badgeKey}`;
-            badge.checked = localStorage.getItem(storageKey) === 'true';
+            const state = localStorage.getItem(storageKey) || 'off';
+            badge.checked = (state !== 'off');
+            badge.closest('label').setAttribute('data-state', state);
+        });
+
+        allUntisFields.forEach(checkbox => {
+            const uKey = checkbox.getAttribute('data-untis-field');
+            const storageKey = `planer_${dateStr}_${uKey}`;
+            const state = localStorage.getItem(storageKey) || 'off';
+            checkbox.checked = (state !== 'off');
+            checkbox.closest('label').setAttribute('data-state', state);
         });
 
         allVerteiltFields.forEach(input => {
             const vKey = input.getAttribute('data-verteilt-field');
             const storageKey = `planer_${dateStr}_${vKey}`;
             input.value = localStorage.getItem(storageKey) || '';
+        });
+
+        allVerteiltBadges.forEach(badge => {
+            const bKey = badge.getAttribute('data-verteilt-badge');
+            badge.setAttribute('data-state', localStorage.getItem(`planer_${dateStr}_${bKey}`) || 'off');
         });
 
         allExtraFields.forEach(input => {
@@ -2820,6 +3273,7 @@
         });
 
         updateVorstunden(dateStr);
+        updateMeinTag();
         updateAutoTasks();
         updateMonatstermine();
 
@@ -2831,6 +3285,9 @@
     syncWithCloud(false).then(() => {
         loadDataForDate(datePicker.value);
     });
+
+    // Wetter beim Start laden
+    loadWeather();
 
     allFields.forEach(field => {
         field.addEventListener('input', () => {
@@ -2855,6 +3312,10 @@
                     }
                 }
 
+                if (fieldKey.startsWith('klasse_name_') || fieldKey.startsWith('klasse_gemacht_')) {
+                    updateMeinTag();
+                }
+
                 if (fieldKey.startsWith('klasse_name_') || fieldKey.startsWith('klasse_vorb_') || fieldKey === 'vorbereitenMain') {
                     updateAutoTasks();
                 }
@@ -2868,12 +3329,69 @@
         });
     });
 
+    // Einheitliche 3-Wege-Klicklogik für Badge-Checkboxes unten
     allBadgeFields.forEach(badge => {
-        badge.addEventListener('change', () => {
+        const label = badge.closest('label');
+        label.addEventListener('click', (e) => {
+            e.preventDefault();
             const dateStr = datePicker.value;
             const badgeKey = badge.getAttribute('data-badge-field');
             const storageKey = `planer_${dateStr}_${badgeKey}`;
-            localStorage.setItem(storageKey, badge.checked ? 'true' : 'false');
+            
+            let currentState = label.getAttribute('data-state') || 'off';
+            let nextState = 'off';
+
+            if (currentState === 'off') {
+                nextState = 'red';
+            } else if (currentState === 'red') {
+                nextState = 'green';
+            } else {
+                nextState = 'off';
+            }
+
+            label.setAttribute('data-state', nextState);
+            badge.checked = (nextState !== 'off');
+            localStorage.setItem(storageKey, nextState);
+            triggerAutoSync();
+        });
+    });
+
+    // 3-Wege-Klicklogik für die Untis-Checkbox bei HA
+    allUntisFields.forEach(checkbox => {
+        const label = checkbox.closest('label');
+        label.addEventListener('click', (e) => {
+            e.preventDefault();
+            const dateStr = datePicker.value;
+            const uKey = checkbox.getAttribute('data-untis-field');
+            const storageKey = `planer_${dateStr}_${uKey}`;
+            
+            let currentState = label.getAttribute('data-state') || 'off';
+            let nextState = 'off';
+
+            if (currentState === 'off') {
+                nextState = 'red';
+            } else if (currentState === 'red') {
+                nextState = 'green';
+            } else {
+                nextState = 'off';
+            }
+
+            label.setAttribute('data-state', nextState);
+            checkbox.checked = (nextState !== 'off');
+            localStorage.setItem(storageKey, nextState);
+            triggerAutoSync();
+        });
+    });
+
+    // 3-Wege-Klicklogik für die blauen Verteilt-Boxen (Skript, SoBI, LN, Pra, PraSet)
+    allVerteiltBadges.forEach(badge => {
+        badge.addEventListener('click', () => {
+            const dateStr = datePicker.value;
+            const bKey = badge.getAttribute('data-verteilt-badge');
+            const currentState = badge.getAttribute('data-state') || 'off';
+            const nextState = currentState === 'off' ? 'red' : (currentState === 'red' ? 'green' : 'off');
+            badge.setAttribute('data-state', nextState);
+            localStorage.setItem(`planer_${dateStr}_${bKey}`, nextState);
             triggerAutoSync();
         });
     });
@@ -2908,11 +3426,8 @@
     });
 
     if (chapterInfoCol) {
-        chapterInfoCol.addEventListener('input', () => {
-            localStorage.setItem(`chapter_info_col`, chapterInfoCol.value);
-            autoResizeTextarea(chapterInfoCol);
-            triggerAutoSync();
-        });
+        chapterInfoCol.value = localStorage.getItem(`chapter_info_col`) || '';
+        autoResizeTextarea(chapterInfoCol);
     }
 
     allChapterTitles.forEach(titleArea => {
