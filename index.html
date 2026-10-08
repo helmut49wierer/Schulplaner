@@ -1286,7 +1286,7 @@
         }
         .chapter-table th, .chapter-table td {
             border: 1px solid #cbd5e1;
-            padding: 6px 8px;
+            padding: 3px 8px;
         }
         .chapter-table th {
             background: #e8f4fd;
@@ -1346,6 +1346,14 @@
             resize: none;
             min-height: 24px;
             box-sizing: border-box;
+        }
+        .chapter-table textarea {
+            display: block;
+            line-height: 1.3;
+            padding: 0;
+            margin: 0;
+            min-height: 0 !important;
+            overflow: hidden;
         }
         .chapter-data-cell textarea:focus, .chapter-title-cell textarea:focus, .chapter-col-header textarea:focus, .chapter-info-cell textarea:focus, .chapter-info-col-header textarea:focus {
             background: #fef08a;
@@ -1590,7 +1598,7 @@
                     <tr id="chapterHeaderRow">
                         <th class="chapter-title-cell" style="background:#dbeafe;">Kapitel</th>
                         <th class="chapter-info-col-header" style="background:#e8f4fd;">
-                            <textarea data-chapter-info-col="1" placeholder="..."></textarea>
+                            <textarea rows="1" data-chapter-info-col="1" placeholder="..."></textarea>
                         </th>
                     </tr>
                 </thead>
@@ -1829,7 +1837,7 @@
     for (let c = 1; c <= numCols; c++) {
         const th = document.createElement('th');
         th.className = 'chapter-col-header';
-        th.innerHTML = `<textarea data-chapter-col="${c}" placeholder="..."></textarea>`;
+        th.innerHTML = `<textarea rows="1" data-chapter-col="${c}" placeholder="..."></textarea>`;
         chapterHeaderRow.appendChild(th);
     }
 
@@ -1838,18 +1846,18 @@
         const row = document.createElement('tr');
         const titleTd = document.createElement('td');
         titleTd.className = 'chapter-title-cell';
-        titleTd.innerHTML = `<textarea data-chapter-title="${rIndex}" placeholder="..."></textarea>`;
+        titleTd.innerHTML = `<textarea rows="1" data-chapter-title="${rIndex}" placeholder="..."></textarea>`;
         row.appendChild(titleTd);
 
         const infoTd = document.createElement('td');
         infoTd.className = 'chapter-info-cell';
-        infoTd.innerHTML = `<textarea data-chapter-info-cell="${rIndex}" placeholder="..."></textarea>`;
+        infoTd.innerHTML = `<textarea rows="1" data-chapter-info-cell="${rIndex}" placeholder="..."></textarea>`;
         row.appendChild(infoTd);
 
         for (let c = 1; c <= numCols; c++) {
             const dataTd = document.createElement('td');
             dataTd.className = 'chapter-data-cell';
-            dataTd.innerHTML = `<textarea data-chapter-cell="${rIndex}_${c}" placeholder="..."></textarea>`;
+            dataTd.innerHTML = `<textarea rows="1" data-chapter-cell="${rIndex}_${c}" placeholder="..."></textarea>`;
             row.appendChild(dataTd);
         }
         chapterBody.appendChild(row);
@@ -2110,12 +2118,12 @@
                 }
             }
 
-            if (key.startsWith('planer_') && (key.includes('_chapcell_') || key.includes('_chapinfocell_'))) {
+            if (key.startsWith('chapcell_') || key.startsWith('chapinfocell_')) {
                 if (category === 'all' || category === 'chapter') {
                     const parts = key.split('_');
-                    const dateStr = parts[1];
+                    const dateStr = datePicker.value;
                     let infoLabel = 'Kapitel-Tabelle';
-                    if (key.includes('_chapinfocell_')) {
+                    if (key.startsWith('chapinfocell_')) {
                         const rIdx = parts[parts.length - 1];
                         const chapName = localStorage.getItem(`default_chap_title_${rIdx}`) || `Kapitel ${rIdx}`;
                         infoLabel = `Kapitel-Info (${chapName})`;
@@ -2128,6 +2136,7 @@
 
                     hits.push({
                         dateStr: dateStr,
+                        isGlobal: true,
                         info: infoLabel,
                         text: val
                     });
@@ -2144,7 +2153,7 @@
 
         hits.forEach(hit => {
             const dp = hit.dateStr.split('-');
-            const formattedDate = dp.length === 3 ? `${dp[2]}.${dp[1]}.${dp[0]}` : hit.dateStr;
+            const formattedDate = hit.isGlobal ? 'an jedem Tag' : (dp.length === 3 ? `${dp[2]}.${dp[1]}.${dp[0]}` : hit.dateStr);
 
             const itemDiv = document.createElement('div');
             itemDiv.className = 'search-result-item';
@@ -2239,6 +2248,7 @@
                     for (const key in cloudData) {
                         localStorage.setItem(key, cloudData[key]);
                     }
+                    if (migrateChapterData()) triggerAutoSync();
                     loadDataForDate(datePicker.value);
                     syncStatusText.innerText = 'Aktiv';
                 }
@@ -3260,14 +3270,14 @@
 
         allChapterInfoCells.forEach(cell => {
             const rIdx = cell.getAttribute('data-chapter-info-cell');
-            const storageKey = `planer_${dateStr}_chapinfocell_${rIdx}`;
+            const storageKey = `chapinfocell_${rIdx}`;
             cell.value = localStorage.getItem(storageKey) || '';
             autoResizeTextarea(cell);
         });
 
         allChapterCells.forEach(cell => {
             const cellKey = cell.getAttribute('data-chapter-cell');
-            const storageKey = `planer_${dateStr}_chapcell_${cellKey}`;
+            const storageKey = `chapcell_${cellKey}`;
             cell.value = localStorage.getItem(storageKey) || '';
             autoResizeTextarea(cell);
         });
@@ -3281,6 +3291,32 @@
         setEmoji(savedChar, false);
         updateDateDisplay(dateStr);
     }
+
+    // Einmalige Migration: bisherige tagesbezogene Kapitel-Einträge -> globale Einträge (neuester Tag gewinnt)
+    function migrateChapterData() {
+        let changed = false;
+        const found = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key || !key.startsWith('planer_')) continue;
+            let m = key.match(/^planer_(\d{4}-\d{2}-\d{2})_chapinfocell_(.+)$/);
+            let gKey = null, dateStr = null;
+            if (m) { dateStr = m[1]; gKey = `chapinfocell_${m[2]}`; }
+            else {
+                m = key.match(/^planer_(\d{4}-\d{2}-\d{2})_chapcell_(.+)$/);
+                if (m) { dateStr = m[1]; gKey = `chapcell_${m[2]}`; }
+            }
+            if (!gKey) continue;
+            const val = localStorage.getItem(key);
+            if (!val || val.trim() === '') continue;
+            if (!found[gKey] || dateStr > found[gKey].dateStr) found[gKey] = { dateStr, val };
+        }
+        for (const gKey in found) {
+            if (localStorage.getItem(gKey) === null) { localStorage.setItem(gKey, found[gKey].val); changed = true; }
+        }
+        return changed;
+    }
+    migrateChapterData();
 
     syncWithCloud(false).then(() => {
         loadDataForDate(datePicker.value);
@@ -3443,7 +3479,7 @@
         cell.addEventListener('input', () => {
             const dateStr = datePicker.value;
             const rIdx = cell.getAttribute('data-chapter-info-cell');
-            localStorage.setItem(`planer_${dateStr}_chapinfocell_${rIdx}`, cell.value);
+            localStorage.setItem(`chapinfocell_${rIdx}`, cell.value);
             autoResizeTextarea(cell);
             triggerAutoSync();
         });
@@ -3453,7 +3489,7 @@
         cell.addEventListener('input', () => {
             const dateStr = datePicker.value;
             const cellKey = cell.getAttribute('data-chapter-cell');
-            localStorage.setItem(`planer_${dateStr}_chapcell_${cellKey}`, cell.value);
+            localStorage.setItem(`chapcell_${cellKey}`, cell.value);
             autoResizeTextarea(cell);
             triggerAutoSync();
         });
