@@ -25,7 +25,6 @@
             box-shadow: 6px 6px 0px rgba(44, 62, 80, 0.2);
             border-radius: 8px;
         }
-        /* Header - Jetzt strikt einzeilig ohne ungewollten Umbruch */
         .header {
             display: flex;
             align-items: center;
@@ -85,7 +84,6 @@
             height: 0;
         }
 
-        /* KW-Badge im Header der Tagesansicht */
         .header-kw-badge {
             background: #ffffff;
             border: 2px solid var(--border-color);
@@ -104,7 +102,6 @@
             color: #e67e22;
         }
 
-        /* Sync & Settings Buttons */
         .sync-settings-group {
             display: flex;
             align-items: center;
@@ -127,7 +124,6 @@
             background: #f1f5f9;
         }
 
-        /* Ansichts-Umschalter im Header */
         .view-toggle-container {
             display: flex;
             background: #2c3e50;
@@ -151,7 +147,6 @@
             background: #e67e22;
         }
 
-        /* App-Ansichten Steuerung */
         .app-view {
             display: none;
         }
@@ -159,7 +154,6 @@
             display: block;
         }
 
-        /* Wetter-Widget in der Mitte */
         .weather-widget {
             display: flex;
             align-items: center;
@@ -186,7 +180,6 @@
             flex-direction: column;
         }
 
-        /* Emoji-Selector ganz rechts */
         .emoji-selector-wrapper {
             position: relative;
             user-select: none;
@@ -252,7 +245,6 @@
             background: #e2e8f0;
         }
 
-        /* Modals */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -306,7 +298,6 @@
         .modal-btn-cancel { background: #f1f5f9; color: #334155; }
         .modal-btn-save { background: #3b82f6; color: white; }
 
-        /* Suchergebnisse Container */
         .search-results-list {
             overflow-y: auto;
             max-height: 300px;
@@ -348,7 +339,6 @@
             padding: 15px;
         }
 
-        /* Monatsübersicht Box */
         .box-monats-uebersicht {
             background: #fdf4ff;
             border: 2px solid var(--border-color);
@@ -403,7 +393,6 @@
             padding: 4px;
         }
 
-        /* Dynamische Zeilen-Container (Nacharbeiten & Fehlzeiten) */
         .dynamic-rows-container {
             padding: 10px;
             display: flex;
@@ -440,7 +429,6 @@
             color: white;
             font-weight: bold;
         }
-        /* Rot-Zustand (Standard / aktiv) */
         .dynamic-checkbox-label[data-state="red"] .custom-dynamic-box {
             background: #ef4444;
             border-color: #b91c1c;
@@ -448,7 +436,6 @@
         .dynamic-checkbox-label[data-state="red"] .custom-dynamic-box::after {
             content: "✓";
         }
-        /* Grün-Zustand */
         .dynamic-checkbox-label[data-state="green"] .custom-dynamic-box {
             background: #10b981;
             border-color: #059669;
@@ -472,7 +459,6 @@
             background: #f8fafc;
         }
 
-        /* Klassen-Auswertung Styles */
         .class-eval-top-bar {
             display: flex;
             align-items: center;
@@ -613,7 +599,6 @@
             border-radius: 6px;
         }
 
-        /* Wochenübersicht Styles */
         .week-top-bar {
             display: flex;
             align-items: center;
@@ -796,7 +781,6 @@
             }
         }
 
-        /* Layout Grid */
         .main-grid {
             display: grid;
             grid-template-columns: 1fr 1.2fr;
@@ -809,7 +793,6 @@
             }
         }
 
-        /* Left Column Boxes */
         .left-column {
             display: flex;
             flex-direction: column;
@@ -942,7 +925,6 @@
             resize: vertical;
         }
 
-        /* Right Column (Klassen) */
         .right-column {
             border-left: 3px dashed #cbd5e1;
             padding-left: 20px;
@@ -1033,7 +1015,6 @@
             font-style: normal;
         }
 
-        /* Spezifisches Layout für die HA-Zeile inklusive Untis-Checkbox rechts */
         .ha-row-container {
             display: flex;
             align-items: center;
@@ -1077,35 +1058,30 @@
             color: white;
             font-weight: bold;
         }
-        /* 3-Wege-Zustände (Rot -> Grün -> Weiß) */
-        .untis-checkbox-label[data-state="red"] .custom-untis-box,
-        .badge-checkbox-label[data-state="red"] .custom-badge-box {
+        .untis-checkbox-label[data-state="red"] .custom-untis-box {
             background: #ef4444;
             border-color: #b91c1c;
         }
-        .untis-checkbox-label[data-state="red"] .custom-untis-box::after,
-        .badge-checkbox-label[data-state="red"] .custom-badge-box::after {
+        .untis-checkbox-label[data-state="red"] .custom-untis-box::after {
             content: "✓";
         }
         
-        .untis-checkbox-label[data-state="green"] .custom-untis-box,
-        .badge-checkbox-label[data-state="green"] .custom-badge-box {
+        .untis-checkbox-label[data-state="green"] .custom-untis-box {
             background: #10b981;
             border-color: #059669;
         }
-        .untis-checkbox-label[data-state="green"] .custom-untis-box::after,
-        .badge-checkbox-label[data-state="green"] .custom-badge-box::after {
+        .untis-checkbox-label[data-state="green"] .custom-untis-box::after {
             content: "✓";
         }
 
-        .verteilt-inline-container {
+        .verteilt-inline-container, .engage-inline-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 6px;
             flex-grow: 1;
             padding-top: 2px;
         }
-        .verteilt-group {
+        .verteilt-group, .engage-group {
             display: flex;
             align-items: center;
             background: #ffffff;
@@ -1114,11 +1090,10 @@
             overflow: hidden;
             box-shadow: 1px 1px 0px rgba(44, 62, 80, 0.05);
         }
-        /* Speziell für das breitere "Praxisset" (PraSet) Feld */
         .verteilt-group-wide {
             grid-column: span 2;
         }
-        .verteilt-badge-box {
+        .verteilt-badge-box, .engage-badge-box {
             background: #dbeafe;
             border-right: 1px solid #64748b;
             padding: 4px 8px;
@@ -1131,18 +1106,16 @@
             user-select: none;
             transition: background 0.15s, color 0.15s;
         }
-        .verteilt-badge-box:hover { filter: brightness(0.96); }
-        /* 3-Wege-Zustände: Ursprung (blau) -> Rot -> Grün -> Ursprung */
-        .verteilt-badge-box[data-state="red"] {
+        .verteilt-badge-box:hover, .engage-badge-box:hover { filter: brightness(0.96); }
+        .verteilt-badge-box[data-state="red"], .engage-badge-box[data-state="red"] {
             background: #ef4444;
             color: #ffffff;
         }
-        .verteilt-badge-box[data-state="green"] {
+        .verteilt-badge-box[data-state="green"], .engage-badge-box[data-state="green"] {
             background: #10b981;
             color: #ffffff;
         }
 
-        /* Box "Das ist mein Tag!" */
         .box-meintag { background: #fef9c3; }
         .box-meintag .box-header { background: #fde68a; }
         .meintag-content {
@@ -1161,7 +1134,7 @@
             color: #94a3b8;
             font-style: italic;
         }
-        .verteilt-group input[type="text"] {
+        .verteilt-group input[type="text"], .engage-group input[type="text"] {
             width: 100%;
             flex-grow: 1;
             border: none;
@@ -1171,58 +1144,16 @@
             background: #ffffff;
             font-family: inherit;
         }
-        .verteilt-group input[type="text"]:focus {
+        .verteilt-group input[type="text"]:focus, .engage-group input[type="text"]:focus {
             background: #fef08a;
         }
 
-        .badge-checkbox-label {
+        .klasse-badges-row-top {
             display: flex;
             align-items: center;
-            gap: 3px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #334155;
-            cursor: pointer;
-            user-select: none;
-            white-space: nowrap;
+            justify-content: flex-end;
+            padding-bottom: 2px;
         }
-        .badge-checkbox-label input[type="checkbox"] {
-            display: none; 
-        }
-        .custom-badge-box {
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 4px;
-            background: #ffffff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.15s, border-color 0.15s;
-            font-size: 0.7rem;
-            color: white;
-            font-weight: bold;
-        }
-
-        .klasse-badges-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            padding-top: 6px;
-            border-top: 1px dashed #cbd5e1;
-            margin-top: 2px;
-            flex-wrap: nowrap;
-        }
-
-        .klasse-badges-left {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            overflow-x: auto;
-            flex-grow: 1;
-        }
-
         .klasse-print-btn {
             background: #e8f4fd;
             border: 2px solid var(--border-color);
@@ -1245,31 +1176,6 @@
             color: white;
         }
 
-        .extra-input-group {
-            display: flex;
-            align-items: center;
-            flex-grow: 1;
-            min-width: 60px;
-            border: 1px solid #64748b;
-            border-radius: 4px;
-            background: #ffffff;
-            overflow: hidden;
-            box-shadow: 1px 1px 0px rgba(44, 62, 80, 0.05);
-        }
-        .extra-input-group input[type="text"] {
-            width: 100%;
-            border: none;
-            padding: 2px 6px;
-            outline: none;
-            font-size: 0.9rem;
-            font-family: inherit;
-            background: transparent;
-        }
-        .extra-input-group input[type="text"]:focus {
-            background: #fef08a;
-        }
-
-        /* Untere Kapitel-Tabelle */
         .chapter-matrix-container {
             border: 2px solid var(--border-color);
             border-radius: 6px;
@@ -1366,7 +1272,6 @@
             color: #64748b;
         }
 
-        /* Druck-Anpassungen */
         @media print {
             body {
                 background-color: #ffffff;
@@ -1423,7 +1328,7 @@
                 width: 25% !important;
                 vertical-align: top !important;
             }
-            .class-slot-mini, .weekly-prep-box, .klasse-card, .verteilt-badge-box {
+            .class-slot-mini, .weekly-prep-box, .klasse-card, .verteilt-badge-box, .engage-badge-box {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
@@ -1514,7 +1419,6 @@
                 <div class="emoji-option" data-emoji="🌈">🌈</div>
                 <div class="emoji-option" data-emoji="🏋">🏋</div>
                 <div class="emoji-option" data-emoji="🚦">🚦</div>
-                <div class="emoji-option" data-emoji="🛒">🛒</div>
                 <div class="emoji-option" data-emoji="📚">📚</div>
                 <div class="emoji-option" data-emoji="⭐">⭐</div>
                 <div class="emoji-option" data-emoji="☕">☕</div>
@@ -1669,10 +1573,7 @@
             <button class="eval-filter-btn" data-filter="vorb" onclick="toggleEvalFilter('vorb', this)">Vorbereiten</button>
             <button class="eval-filter-btn" data-filter="ha" onclick="toggleEvalFilter('ha', this)">HA</button>
             <button class="eval-filter-btn" data-filter="ablaufees" onclick="toggleEvalFilter('ablaufees', this)">Ablauf-EES</button>
-            <button class="eval-filter-btn" data-filter="gra" onclick="toggleEvalFilter('gra', this)">GrA</button>
-            <button class="eval-filter-btn" data-filter="sol" onclick="toggleEvalFilter('sol', this)">SoL</button>
-            <button class="eval-filter-btn" data-filter="vid" onclick="toggleEvalFilter('vid', this)">Vid</button>
-            <button class="eval-filter-btn" data-filter="ln" onclick="toggleEvalFilter('ln', this)">LN</button>
+            <button class="eval-filter-btn" data-filter="engage" onclick="toggleEvalFilter('engage', this)">Engage</button>
         </div>
 
         <div class="class-eval-results-container" id="classEvalContainer">
@@ -1707,7 +1608,7 @@
 <div class="modal-overlay" id="searchModal">
     <div class="modal-box">
         <h3>Verlauf durchsuchen (Auswertung)</h3>
-        <p>Suche nach Begriffen in "Verteilten" Materialien oder Kapitel-Zellen über alle Tage hinweg.</p>
+        <p>Suche nach Begriffen in "Verteilten" Materialien, "Engage" oder Kapitel-Zellen über alle Tage hinweg.</p>
         <div>
             <label for="searchInput">Suchbegriff (z.B. Skript, Kapitel-Name...):</label>
             <input type="text" id="searchInput" placeholder="Suchbegriff eingeben...">
@@ -1715,8 +1616,8 @@
         <div>
             <label for="searchCategory">Kategorie filtern:</label>
             <select id="searchCategory">
-                <option value="all">Alle Bereiche (Verteilt & Kapitel)</option>
-                <option value="verteilt">Nur "Verteilt" (Skript, SoBI, LN, Pra, PraSet)</option>
+                <option value="all">Alle Bereiche (Verteilt, Engage & Kapitel)</option>
+                <option value="verteilt">Nur "Verteilt" & "Engage"</option>
                 <option value="chapter">Nur Kapitel-Tabelle</option>
             </select>
         </div>
@@ -1743,6 +1644,9 @@
                 <textarea data-field="klasse_name_${i}" placeholder="Kl."></textarea>
             </div>
             <div class="klasse-lines">
+                <div class="klasse-badges-row-top">
+                    <button class="klasse-print-btn" onclick="printSingleClass(${i})" title="Nur diese Klasse drucken">🖨️ Druck</button>
+                </div>
                 <div class="line-row line-row-vorstunde">
                     <span class="line-label">Vorstunde</span>
                     <textarea data-field="klasse_vorstunde_${i}" rows="1" placeholder="Automatisch..." title="Aus letzter Stunde übernommen"></textarea>
@@ -1755,23 +1659,23 @@
                     <span class="line-label">Verteilt</span>
                     <div class="verteilt-inline-container">
                         <div class="verteilt-group">
-                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_skript_${i}" title="Klicken: blau → rot → grün → blau">Skript</span>
+                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_skript_${i}" title="Klicken: grau → rot → grün → grau">Skript</span>
                             <input type="text" data-verteilt-field="verteilt_skript_${i}" placeholder="...">
                         </div>
                         <div class="verteilt-group">
-                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_sobl_${i}" title="Klicken: blau → rot → grün → blau">SoBI</span>
+                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_sobl_${i}" title="Klicken: grau → rot → grün → grau">SoBI</span>
                             <input type="text" data-verteilt-field="verteilt_sobl_${i}" placeholder="...">
                         </div>
                         <div class="verteilt-group">
-                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_ln_${i}" title="Klicken: blau → rot → grün → blau">LN</span>
+                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_ln_${i}" title="Klicken: grau → rot → grün → grau">LN</span>
                             <input type="text" data-verteilt-field="verteilt_ln_${i}" placeholder="...">
                         </div>
                         <div class="verteilt-group">
-                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_pra_${i}" title="Klicken: blau → rot → grün → blau">Pra</span>
+                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_pra_${i}" title="Klicken: grau → rot → grün → grau">Pra</span>
                             <input type="text" data-verteilt-field="verteilt_pra_${i}" placeholder="...">
                         </div>
                         <div class="verteilt-group verteilt-group-wide">
-                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_praset_${i}" title="Klicken: blau → rot → grün → blau">PraSet</span>
+                            <span class="verteilt-badge-box" data-state="off" data-verteilt-badge="vstate_praset_${i}" title="Klicken: grau → rot → grün → grau">PraSet</span>
                             <input type="text" data-verteilt-field="verteilt_praset_${i}" placeholder="Praxisset...">
                         </div>
                     </div>
@@ -1794,33 +1698,42 @@
                     <span class="line-label">Vorbereiten</span>
                     <textarea data-field="klasse_vorb_${i}" rows="1" placeholder="..."></textarea>
                 </div>
-                <div class="klasse-badges-row">
-                    <div class="klasse-badges-left">
-                        <label class="badge-checkbox-label" data-state="off">
-                            <input type="checkbox" data-badge-field="badge_ln_${i}">
-                            <span class="custom-badge-box"></span> LN
-                        </label>
-                        <label class="badge-checkbox-label" data-state="off">
-                            <input type="checkbox" data-badge-field="badge_gra_${i}">
-                            <span class="custom-badge-box"></span> GrA
-                        </label>
-                        <label class="badge-checkbox-label" data-state="off">
-                            <input type="checkbox" data-badge-field="badge_sol_${i}">
-                            <span class="custom-badge-box"></span> SoL
-                        </label>
-                        <label class="badge-checkbox-label" data-state="off">
-                            <input type="checkbox" data-badge-field="badge_vid_${i}">
-                            <span class="custom-badge-box"></span> Vid
-                        </label>
-                        <label class="badge-checkbox-label" data-state="off">
-                            <input type="checkbox" data-badge-field="badge_ha_${i}">
-                            <span class="custom-badge-box"></span> HA
-                        </label>
-                        <div class="extra-input-group">
-                            <input type="text" data-extra-field="extra_input_${i}" placeholder="...">
+                <div class="line-row">
+                    <span class="line-label" style="font-weight: bold; color: #1e293b;">Engage</span>
+                    <div class="engage-inline-container">
+                        <div class="engage-group">
+                            <span class="engage-badge-box" data-state="off" data-engage-badge="engagestate_gra_${i}" title="Klicken: grau → rot → grün → grau">GrA</span>
+                            <input type="text" data-engage-field="engagefield_gra_${i}" placeholder="...">
+                        </div>
+                        <div class="engage-group">
+                            <span class="engage-badge-box" data-state="off" data-engage-badge="engagestate_ln_${i}" title="Klicken: grau → rot → grün → grau">LN</span>
+                            <input type="text" data-engage-field="engagefield_ln_${i}" placeholder="...">
+                        </div>
+                        <div class="engage-group">
+                            <span class="engage-badge-box" data-state="off" data-engage-badge="engagestate_quiz_${i}" title="Klicken: grau → rot → grün → grau">Quiz</span>
+                            <input type="text" data-engage-field="engagefield_quiz_${i}" placeholder="...">
+                        </div>
+                        <div class="engage-group">
+                            <span class="engage-badge-box" data-state="off" data-engage-badge="engagestate_sobl_${i}" title="Klicken: grau → rot → grün → grau">SoBI</span>
+                            <input type="text" data-engage-field="engagefield_sobl_${i}" placeholder="...">
+                        </div>
+                        <div class="engage-group">
+                            <span class="engage-badge-box" data-state="off" data-engage-badge="engagestate_vid_${i}" title="Klicken: grau → rot → grün → grau">Vid</span>
+                            <input type="text" data-engage-field="engagefield_vid_${i}" placeholder="...">
+                        </div>
+                        <div class="engage-group">
+                            <span class="engage-badge-box" data-state="off" data-engage-badge="engagestate_sonst1_${i}" title="Klicken: grau → rot → grün → grau">Sonst1</span>
+                            <input type="text" data-engage-field="engagefield_sonst1_${i}" placeholder="...">
+                        </div>
+                        <div class="engage-group">
+                            <span class="engage-badge-box" data-state="off" data-engage-badge="engagestate_sol_${i}" title="Klicken: grau → rot → grün → grau">SoL</span>
+                            <input type="text" data-engage-field="engagefield_sol_${i}" placeholder="...">
+                        </div>
+                        <div class="engage-group">
+                            <span class="engage-badge-box" data-state="off" data-engage-badge="engagestate_sonst2_${i}" title="Klicken: grau → rot → grün → grau">Sonst2</span>
+                            <input type="text" data-engage-field="engagefield_sonst2_${i}" placeholder="...">
                         </div>
                     </div>
-                    <button class="klasse-print-btn" onclick="printSingleClass(${i})" title="Nur diese Klasse drucken">🖨️ Druck</button>
                 </div>
             </div>
         `;
@@ -1876,12 +1789,14 @@
     const nextDayBtn = document.getElementById('nextDayBtn');
     const mainContainer = document.getElementById('mainContainer');
     const allFields = document.querySelectorAll('[data-field]');
-    const allBadgeFields = document.querySelectorAll('[data-badge-field]');
     const allUntisFields = document.querySelectorAll('[data-untis-field]');
     const allVerteiltFields = document.querySelectorAll('[data-verteilt-field]');
     const allVerteiltBadges = document.querySelectorAll('[data-verteilt-badge]');
+    
+    const allEngageFields = document.querySelectorAll('[data-engage-field]');
+    const allEngageBadges = document.querySelectorAll('[data-engage-badge]');
+
     const meinTagContainer = document.getElementById('meinTagContainer');
-    const allExtraFields = document.querySelectorAll('[data-extra-field]');
     
     const allChapterTitles = document.querySelectorAll('[data-chapter-title]');
     const allChapterCols = document.querySelectorAll('[data-chapter-col]');
@@ -1979,10 +1894,9 @@
         return { year: d.getUTCFullYear(), week: weekNo };
     }
 
-    // Wetter-Funktion
     function loadWeather() {
         if (!navigator.geolocation) {
-            fetchWeather(48.2913, 10.9575); // Fallback Kissing
+            fetchWeather(48.2913, 10.9575);
             return;
         }
         navigator.geolocation.getCurrentPosition(
@@ -1990,7 +1904,7 @@
                 fetchWeather(position.coords.latitude, position.coords.longitude);
             },
             () => {
-                fetchWeather(48.2913, 10.9575); // Fallback bei Ablehnung
+                fetchWeather(48.2913, 10.9575);
             },
             { timeout: 10000 }
         );
@@ -2017,7 +1931,7 @@
                     else if (code >= 51 && code <= 67) { icon = '🌧️'; text = 'Regen'; }
                     else if (code >= 71 && code <= 77) { icon = '❄️'; text = 'Schnee'; }
                     else if (code >= 80 && code <= 82) { icon = '🌦️'; text = 'Schauer'; }
-                    else if (code >= 95) { icon = '⛈️️'; text = 'Gewitter'; }
+                    else if (code >= 95) { icon = '⛈️'; text = 'Gewitter'; }
 
                     document.getElementById('wIcon').innerText = icon;
                     document.getElementById('wRain').innerText = text;
@@ -2101,7 +2015,7 @@
             const val = localStorage.getItem(key);
             if (!val || !val.toLowerCase().includes(query)) continue;
 
-            if (key.startsWith('planer_') && key.includes('_verteilt_')) {
+            if (key.startsWith('planer_') && (key.includes('_verteilt_') || key.includes('_engagefield_'))) {
                 if (category === 'all' || category === 'verteilt') {
                     const parts = key.split('_');
                     const dateStr = parts[1];
@@ -2112,7 +2026,7 @@
 
                     hits.push({
                         dateStr: dateStr,
-                        info: `Verteilt (${typeName}) in ${className}`,
+                        info: `Bereich (${typeName}) in ${className}`,
                         text: val
                     });
                 }
@@ -2714,16 +2628,18 @@
                     let verteiltPra = localStorage.getItem(`planer_${dateStr}_verteilt_pra_${i}`) || '';
                     let verteiltPraset = localStorage.getItem(`planer_${dateStr}_verteilt_praset_${i}`) || '';
 
-                    let badgeLnState = localStorage.getItem(`planer_${dateStr}_badge_ln_${i}`) || 'off';
-                    let badgeGraState = localStorage.getItem(`planer_${dateStr}_badge_gra_${i}`) || 'off';
-                    let badgeSolState = localStorage.getItem(`planer_${dateStr}_badge_sol_${i}`) || 'off';
-                    let badgeVidState = localStorage.getItem(`planer_${dateStr}_badge_vid_${i}`) || 'off';
-                    let badgeHaState = localStorage.getItem(`planer_${dateStr}_badge_ha_${i}`) || 'off';
-                    let extraInput = localStorage.getItem(`planer_${dateStr}_extra_input_${i}`) || '';
+                    let engGra = localStorage.getItem(`planer_${dateStr}_engagefield_gra_${i}`) || '';
+                    let engLn = localStorage.getItem(`planer_${dateStr}_engagefield_ln_${i}`) || '';
+                    let engQuiz = localStorage.getItem(`planer_${dateStr}_engagefield_quiz_${i}`) || '';
+                    let engSobl = localStorage.getItem(`planer_${dateStr}_engagefield_sobl_${i}`) || '';
+                    let engVid = localStorage.getItem(`planer_${dateStr}_engagefield_vid_${i}`) || '';
+                    let engSonst1 = localStorage.getItem(`planer_${dateStr}_engagefield_sonst1_${i}`) || '';
+                    let engSol = localStorage.getItem(`planer_${dateStr}_engagefield_sol_${i}`) || '';
+                    let engSonst2 = localStorage.getItem(`planer_${dateStr}_engagefield_sonst2_${i}`) || '';
 
-                    let hasBadges = badgeLnState !== 'off' || badgeGraState !== 'off' || badgeSolState !== 'off' || badgeVidState !== 'off' || badgeHaState !== 'off';
+                    let hasEngage = engGra.trim() || engLn.trim() || engQuiz.trim() || engSobl.trim() || engVid.trim() || engSonst1.trim() || engSol.trim() || engSonst2.trim();
 
-                    if (gemachtVal.trim() || vorbVal.trim() || haVal.trim() || untisState !== 'off' || ablaufeesVal.trim() || verteiltSkript.trim() || verteiltSobl.trim() || verteiltLn.trim() || verteiltPra.trim() || verteiltPraset.trim() || hasBadges || extraInput.trim()) {
+                    if (gemachtVal.trim() || vorbVal.trim() || haVal.trim() || untisState !== 'off' || ablaufeesVal.trim() || verteiltSkript.trim() || verteiltSobl.trim() || verteiltLn.trim() || verteiltPra.trim() || verteiltPraset.trim() || hasEngage) {
                         
                         let includeItem = false;
                         if (activeEvalFilters.has('alle')) {
@@ -2732,17 +2648,14 @@
                             if (activeEvalFilters.has('lernziel') && gemachtVal.trim()) includeItem = true;
                             if (activeEvalFilters.has('verteilt') && (verteiltSkript.trim() || verteiltSobl.trim() || verteiltLn.trim() || verteiltPra.trim() || verteiltPraset.trim())) includeItem = true;
                             if (activeEvalFilters.has('vorb') && vorbVal.trim()) includeItem = true;
-                            if (activeEvalFilters.has('ha') && (haVal.trim() || untisState !== 'off' || badgeHaState !== 'off')) includeItem = true;
+                            if (activeEvalFilters.has('ha') && (haVal.trim() || untisState !== 'off')) includeItem = true;
                             if (activeEvalFilters.has('ablaufees') && ablaufeesVal.trim()) includeItem = true;
-                            if (activeEvalFilters.has('ln') && (badgeLnState !== 'off' || verteiltLn.trim())) includeItem = true;
-                            if (activeEvalFilters.has('gra') && badgeGraState !== 'off') includeItem = true;
-                            if (activeEvalFilters.has('sol') && badgeSolState !== 'off') includeItem = true;
-                            if (activeEvalFilters.has('vid') && badgeVidState !== 'off') includeItem = true;
+                            if (activeEvalFilters.has('engage') && hasEngage) includeItem = true;
                         }
 
                         if (includeItem) {
                             if (!classDataMap.has(displayClassName)) {
-                                classDataMap.set(displayClassName, { gemacht: [], verteilt: [], vorb: [], ha: [], ablaufees: [], sonstige: [] });
+                                classDataMap.set(displayClassName, { gemacht: [], verteilt: [], vorb: [], ha: [], ablaufees: [], engage: [] });
                             }
 
                             let dp = dateStr.split('-');
@@ -2768,11 +2681,10 @@
                                 classBucket.vorb.push({ dateStr, formattedDate, text: vorbVal });
                             }
 
-                            if ((haVal.trim() || untisState !== 'off' || badgeHaState !== 'off') && (activeEvalFilters.has('alle') || activeEvalFilters.has('ha'))) {
+                            if ((haVal.trim() || untisState !== 'off') && (activeEvalFilters.has('alle') || activeEvalFilters.has('ha'))) {
                                 let haText = haVal.trim();
                                 if (untisState === 'red') haText += (haText ? ' ' : '') + '(🔴 Untis)';
                                 if (untisState === 'green') haText += (haText ? ' ' : '') + '(🟢 Untis)';
-                                if (badgeHaState !== 'off') haText += (haText ? ' ' : '') + `(HA Check: ${badgeHaState.toUpperCase()})`;
                                 classBucket.ha.push({ dateStr, formattedDate, text: haText });
                             }
 
@@ -2780,23 +2692,18 @@
                                 classBucket.ablaufees.push({ dateStr, formattedDate, text: ablaufeesVal });
                             }
 
-                            let badgesArr = [];
-                            if (badgeLnState !== 'off') badgesArr.push(`LN (${badgeLnState.toUpperCase()})`);
-                            if (badgeGraState !== 'off') badgesArr.push(`GrA (${badgeGraState.toUpperCase()})`);
-                            if (badgeSolState !== 'off') badgesArr.push(`SoL (${badgeSolState.toUpperCase()})`);
-                            if (badgeVidState !== 'off') badgesArr.push(`Vid (${badgeVidState.toUpperCase()})`);
-                            if (extraInput.trim()) badgesArr.push(extraInput);
+                            let engageParts = [];
+                            if (engGra.trim()) engageParts.push(`GrA: ${engGra}`);
+                            if (engLn.trim()) engageParts.push(`LN: ${engLn}`);
+                            if (engQuiz.trim()) engageParts.push(`Quiz: ${engQuiz}`);
+                            if (engSobl.trim()) engageParts.push(`SoBI: ${engSobl}`);
+                            if (engVid.trim()) engageParts.push(`Vid: ${engVid}`);
+                            if (engSonst1.trim()) engageParts.push(`Sonst1: ${engSonst1}`);
+                            if (engSol.trim()) engageParts.push(`SoL: ${engSol}`);
+                            if (engSonst2.trim()) engageParts.push(`Sonst2: ${engSonst2}`);
 
-                            if (badgesArr.length > 0) {
-                                let matchBadgeFilter = activeEvalFilters.has('alle') || 
-                                    (activeEvalFilters.has('ln') && badgeLnState !== 'off') ||
-                                    (activeEvalFilters.has('gra') && badgeGraState !== 'off') ||
-                                    (activeEvalFilters.has('sol') && badgeSolState !== 'off') ||
-                                    (activeEvalFilters.has('vid') && badgeVidState !== 'off');
-                                
-                                if (matchBadgeFilter) {
-                                    classBucket.sonstige.push({ dateStr, formattedDate, text: `Markierungen: ${badgesArr.join(', ')}` });
-                                }
+                            if (engageParts.length > 0 && (activeEvalFilters.has('alle') || activeEvalFilters.has('engage'))) {
+                                classBucket.engage.push({ dateStr, formattedDate, text: engageParts.join(' | ') });
                             }
                         }
                     }
@@ -2827,7 +2734,7 @@
                 { key: 'ha', title: 'HA', bg: '#ecfdf5' },
                 { key: 'ablaufees', title: 'Ablauf-EES', bg: '#fef08a' },
                 { key: 'vorb', title: 'Vorbereiten', bg: '#fee2e2' },
-                { key: 'sonstige', title: 'Markierungen & Sonstiges', bg: '#f1f5f9' }
+                { key: 'engage', title: 'Engage', bg: '#fce7f3' }
             ];
 
             categoryConfigs.forEach(cat => {
@@ -2972,15 +2879,18 @@
             let verteiltPra = localStorage.getItem(`planer_${dateStr}_verteilt_pra_${i}`) || '';
             let verteiltPraset = localStorage.getItem(`planer_${dateStr}_verteilt_praset_${i}`) || '';
 
-            let badgeLnState = localStorage.getItem(`planer_${dateStr}_badge_ln_${i}`) || 'off';
-            let badgeGraState = localStorage.getItem(`planer_${dateStr}_badge_gra_${i}`) || 'off';
-            let badgeSolState = localStorage.getItem(`planer_${dateStr}_badge_sol_${i}`) || 'off';
-            let badgeVidState = localStorage.getItem(`planer_${dateStr}_badge_vid_${i}`) || 'off';
-            let badgeHaState = localStorage.getItem(`planer_${dateStr}_badge_ha_${i}`) || 'off';
+            let engGra = localStorage.getItem(`planer_${dateStr}_engagefield_gra_${i}`) || '';
+            let engLn = localStorage.getItem(`planer_${dateStr}_engagefield_ln_${i}`) || '';
+            let engQuiz = localStorage.getItem(`planer_${dateStr}_engagefield_quiz_${i}`) || '';
+            let engSobl = localStorage.getItem(`planer_${dateStr}_engagefield_sobl_${i}`) || '';
+            let engVid = localStorage.getItem(`planer_${dateStr}_engagefield_vid_${i}`) || '';
+            let engSonst1 = localStorage.getItem(`planer_${dateStr}_engagefield_sonst1_${i}`) || '';
+            let engSol = localStorage.getItem(`planer_${dateStr}_engagefield_sol_${i}`) || '';
+            let engSonst2 = localStorage.getItem(`planer_${dateStr}_engagefield_sonst2_${i}`) || '';
 
-            let hasBadges = badgeLnState !== 'off' || badgeGraState !== 'off' || badgeSolState !== 'off' || badgeVidState !== 'off' || badgeHaState !== 'off';
+            let hasEngage = engGra.trim() || engLn.trim() || engQuiz.trim() || engSobl.trim() || engVid.trim() || engSonst1.trim() || engSol.trim() || engSonst2.trim();
 
-            if (klName.trim() || gemachtVal.trim() || vorstundeVal.trim() || haVal.trim() || untisState !== 'off' || ablaufeesVal.trim() || verteiltSkript.trim() || verteiltSobl.trim() || verteiltLn.trim() || verteiltPra.trim() || verteiltPraset.trim() || hasBadges) {
+            if (klName.trim() || gemachtVal.trim() || vorstundeVal.trim() || haVal.trim() || untisState !== 'off' || ablaufeesVal.trim() || verteiltSkript.trim() || verteiltSobl.trim() || verteiltLn.trim() || verteiltPra.trim() || verteiltPraset.trim() || hasEngage) {
                 hasContent = true;
                 const theme = getThemeForClassName(klName);
                 
@@ -2988,12 +2898,15 @@
                 if (untisState === 'red') haDisplay += (haDisplay ? ' ' : '') + '🔴 Untis';
                 if (untisState === 'green') haDisplay += (haDisplay ? ' ' : '') + '🟢 Untis';
 
-                let badgeDisplayParts = [];
-                if (badgeLnState !== 'off') badgeDisplayParts.push(`LN(${badgeLnState.toUpperCase()})`);
-                if (badgeGraState !== 'off') badgeDisplayParts.push(`GrA(${badgeGraState.toUpperCase()})`);
-                if (badgeSolState !== 'off') badgeDisplayParts.push(`SoL(${badgeSolState.toUpperCase()})`);
-                if (badgeVidState !== 'off') badgeDisplayParts.push(`Vid(${badgeVidState.toUpperCase()})`);
-                if (badgeHaState !== 'off') badgeDisplayParts.push(`HA(${badgeHaState.toUpperCase()})`);
+                let engageParts = [];
+                if (engGra.trim()) engageParts.push(`GrA: ${engGra}`);
+                if (engLn.trim()) engageParts.push(`LN: ${engLn}`);
+                if (engQuiz.trim()) engageParts.push(`Quiz: ${engQuiz}`);
+                if (engSobl.trim()) engageParts.push(`SoBI: ${engSobl}`);
+                if (engVid.trim()) engageParts.push(`Vid: ${engVid}`);
+                if (engSonst1.trim()) engageParts.push(`Sonst1: ${engSonst1}`);
+                if (engSol.trim()) engageParts.push(`SoL: ${engSol}`);
+                if (engSonst2.trim()) engageParts.push(`Sonst2: ${engSonst2}`);
 
                 htmlContent += `
                     <div class="class-slot-mini" style="background-color: ${theme.bg}; border-left: 5px solid ${theme.border};">
@@ -3008,7 +2921,7 @@
                             ${verteiltLn.trim() ? `<div><strong>LN:</strong> ${verteiltLn}</div>` : ''}
                             ${verteiltPra.trim() ? `<div><strong>Pra:</strong> ${verteiltPra}</div>` : ''}
                             ${verteiltPraset.trim() ? `<div><strong>PraSet:</strong> ${verteiltPraset}</div>` : ''}
-                            ${badgeDisplayParts.length > 0 ? `<div><strong>Markierungen:</strong> ${badgeDisplayParts.join(', ')}</div>` : ''}
+                            ${engageParts.length > 0 ? `<div><strong>Engage:</strong> ${engageParts.join(' | ')}</div>` : ''}
                         </div>
                     </div>
                 `;
@@ -3073,72 +2986,77 @@
         }
     }
 
-    function getPreviousDateStr(currentDateStr) {
-        let allDates = new Set();
+    function removeTaskFromFuture(boxType, textToRemove, currentDateStr) {
+        if (!textToRemove || !textToRemove.trim()) return;
+        const targetText = textToRemove.trim();
+
         for (let i = 0; i < localStorage.length; i++) {
-            let key = localStorage.key(i);
-            if (key && key.startsWith('planer_')) {
-                let parts = key.split('_');
-                if (parts.length >= 2 && parts[1].length === 10) {
-                    allDates.add(parts[1]);
-                }
-            }
-        }
-        let sortedDates = Array.from(allDates).sort();
-        let prevDate = '';
-        for (let d of sortedDates) {
-            if (d < currentDateStr) {
-                prevDate = d;
-            } else {
-                break;
-            }
-        }
-        return prevDate;
-    }
-
-    // Generische Funktion für dynamische Zeilenboxen (Nacharbeiten & Fehlzeiten)
-    function renderDynamicRows(dateStr, boxType, containerElement) {
-        containerElement.innerHTML = '';
-        
-        let hasLocalStorageData = false;
-        for (let i = 1; i <= 50; i++) {
-            if (localStorage.getItem(`planer_${dateStr}_${boxType}_text_${i}`) !== null) {
-                hasLocalStorageData = true;
-                break;
-            }
-        }
-
-        if (!hasLocalStorageData) {
-            let prevDateStr = getPreviousDateStr(dateStr);
-            if (prevDateStr) {
-                let openTasks = [];
-                for (let i = 1; i <= 50; i++) {
-                    let text = localStorage.getItem(`planer_${prevDateStr}_${boxType}_text_${i}`);
-                    let state = localStorage.getItem(`planer_${prevDateStr}_${boxType}_state_${i}`) || 'red';
-                    
-                    if (text && text.trim() !== '') {
-                        if (state !== 'green') {
-                            openTasks.push({ text: text.trim(), state: state });
+            const key = localStorage.key(i);
+            if (key && key.startsWith('planer_') && key.includes(`_${boxType}_text_`)) {
+                const parts = key.split('_');
+                if (parts.length >= 5) {
+                    const dateStr = parts[1];
+                    if (dateStr > currentDateStr) {
+                        const val = localStorage.getItem(key);
+                        if (val && val.trim() === targetText) {
+                            const index = parts[parts.length - 1];
+                            localStorage.removeItem(`planer_${dateStr}_${boxType}_text_${index}`);
+                            localStorage.removeItem(`planer_${dateStr}_${boxType}_state_${index}`);
                         }
                     }
                 }
+            }
+        }
+    }
 
-                if (openTasks.length > 0) {
-                    openTasks.forEach((task, index) => {
-                        let rIndex = index + 1;
-                        localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, task.text);
-                        localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, task.state);
-                    });
+    function renderDynamicRows(dateStr, boxType, containerElement) {
+        containerElement.innerHTML = '';
+        
+        const taskMap = new Map();
+        const pastDates = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('planer_') && key.includes(`_${boxType}_text_`)) {
+                const parts = key.split('_');
+                if (parts.length >= 5) {
+                    const taskDate = parts[1];
+                    if (taskDate <= dateStr && !pastDates.includes(taskDate)) {
+                        pastDates.push(taskDate);
+                    }
                 }
             }
         }
+        pastDates.sort();
 
-        let maxRow = 1;
-        for (let i = 1; i <= 50; i++) {
-            if (localStorage.getItem(`planer_${dateStr}_${boxType}_text_${i}`)) {
-                if (i > maxRow) maxRow = i;
+        pastDates.forEach(dStr => {
+            for (let i = 1; i <= 50; i++) {
+                const text = localStorage.getItem(`planer_${dStr}_${boxType}_text_${i}`);
+                const state = localStorage.getItem(`planer_${dStr}_${boxType}_state_${i}`) || 'red';
+
+                if (text && text.trim() !== '') {
+                    const cleanText = text.trim();
+                    if (state === 'green' || state === 'off') {
+                        taskMap.delete(cleanText);
+                    } else if (state === 'red') {
+                        taskMap.set(cleanText, 'red');
+                    }
+                }
             }
+        });
+
+        for (let i = 1; i <= 50; i++) {
+            localStorage.removeItem(`planer_${dateStr}_${boxType}_text_${i}`);
+            localStorage.removeItem(`planer_${dateStr}_${boxType}_state_${i}`);
         }
+
+        let rIndex = 1;
+        taskMap.forEach((state, text) => {
+            localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, text);
+            localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, 'red');
+            rIndex++;
+        });
+
+        let maxRow = Math.max(1, taskMap.size);
 
         for (let r = 1; r <= maxRow; r++) {
             appendDynamicRow(dateStr, boxType, containerElement, r);
@@ -3166,7 +3084,13 @@
         const checkboxEl = rowDiv.querySelector('input[type="checkbox"]');
 
         inputEl.addEventListener('input', () => {
-            localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, inputEl.value);
+            const val = inputEl.value.trim();
+            if (val === '') {
+                localStorage.removeItem(`planer_${dateStr}_${boxType}_text_${rIndex}`);
+                localStorage.removeItem(`planer_${dateStr}_${boxType}_state_${rIndex}`);
+            } else {
+                localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, inputEl.value);
+            }
             triggerAutoSync();
         });
 
@@ -3197,6 +3121,12 @@
             labelEl.setAttribute('data-state', nextState);
             checkboxEl.checked = (nextState !== 'off');
             localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, nextState);
+            
+            if (nextState === 'green' || nextState === 'off') {
+                const textVal = inputEl.value;
+                removeTaskFromFuture(boxType, textVal, dateStr);
+            }
+
             triggerAutoSync();
         });
 
@@ -3218,14 +3148,6 @@
         renderDynamicRows(dateStr, 'nacharbeiten', nacharbeitenContainer);
         renderDynamicRows(dateStr, 'fehlzeiten', fehlzeitenContainer);
 
-        allBadgeFields.forEach(badge => {
-            const badgeKey = badge.getAttribute('data-badge-field');
-            const storageKey = `planer_${dateStr}_${badgeKey}`;
-            const state = localStorage.getItem(storageKey) || 'off';
-            badge.checked = (state !== 'off');
-            badge.closest('label').setAttribute('data-state', state);
-        });
-
         allUntisFields.forEach(checkbox => {
             const uKey = checkbox.getAttribute('data-untis-field');
             const storageKey = `planer_${dateStr}_${uKey}`;
@@ -3245,10 +3167,15 @@
             badge.setAttribute('data-state', localStorage.getItem(`planer_${dateStr}_${bKey}`) || 'off');
         });
 
-        allExtraFields.forEach(input => {
-            const eKey = input.getAttribute('data-extra-field');
+        allEngageFields.forEach(input => {
+            const eKey = input.getAttribute('data-engage-field');
             const storageKey = `planer_${dateStr}_${eKey}`;
             input.value = localStorage.getItem(storageKey) || '';
+        });
+
+        allEngageBadges.forEach(badge => {
+            const bKey = badge.getAttribute('data-engage-badge');
+            badge.setAttribute('data-state', localStorage.getItem(`planer_${dateStr}_${bKey}`) || 'off');
         });
 
         allChapterCols.forEach(col => {
@@ -3292,7 +3219,6 @@
         updateDateDisplay(dateStr);
     }
 
-    // Einmalige Migration: bisherige tagesbezogene Kapitel-Einträge -> globale Einträge (neuester Tag gewinnt)
     function migrateChapterData() {
         let changed = false;
         const found = {};
@@ -3322,7 +3248,6 @@
         loadDataForDate(datePicker.value);
     });
 
-    // Wetter beim Start laden
     loadWeather();
 
     allFields.forEach(field => {
@@ -3365,34 +3290,6 @@
         });
     });
 
-    // Einheitliche 3-Wege-Klicklogik für Badge-Checkboxes unten
-    allBadgeFields.forEach(badge => {
-        const label = badge.closest('label');
-        label.addEventListener('click', (e) => {
-            e.preventDefault();
-            const dateStr = datePicker.value;
-            const badgeKey = badge.getAttribute('data-badge-field');
-            const storageKey = `planer_${dateStr}_${badgeKey}`;
-            
-            let currentState = label.getAttribute('data-state') || 'off';
-            let nextState = 'off';
-
-            if (currentState === 'off') {
-                nextState = 'red';
-            } else if (currentState === 'red') {
-                nextState = 'green';
-            } else {
-                nextState = 'off';
-            }
-
-            label.setAttribute('data-state', nextState);
-            badge.checked = (nextState !== 'off');
-            localStorage.setItem(storageKey, nextState);
-            triggerAutoSync();
-        });
-    });
-
-    // 3-Wege-Klicklogik für die Untis-Checkbox bei HA
     allUntisFields.forEach(checkbox => {
         const label = checkbox.closest('label');
         label.addEventListener('click', (e) => {
@@ -3419,7 +3316,6 @@
         });
     });
 
-    // 3-Wege-Klicklogik für die blauen Verteilt-Boxen (Skript, SoBI, LN, Pra, PraSet)
     allVerteiltBadges.forEach(badge => {
         badge.addEventListener('click', () => {
             const dateStr = datePicker.value;
@@ -3442,10 +3338,22 @@
         });
     });
 
-    allExtraFields.forEach(input => {
+    allEngageBadges.forEach(badge => {
+        badge.addEventListener('click', () => {
+            const dateStr = datePicker.value;
+            const bKey = badge.getAttribute('data-engage-badge');
+            const currentState = badge.getAttribute('data-state') || 'off';
+            const nextState = currentState === 'off' ? 'red' : (currentState === 'red' ? 'green' : 'off');
+            badge.setAttribute('data-state', nextState);
+            localStorage.setItem(`planer_${dateStr}_${bKey}`, nextState);
+            triggerAutoSync();
+        });
+    });
+
+    allEngageFields.forEach(input => {
         input.addEventListener('input', () => {
             const dateStr = datePicker.value;
-            const eKey = input.getAttribute('data-extra-field');
+            const eKey = input.getAttribute('data-engage-field');
             const storageKey = `planer_${dateStr}_${eKey}`;
             localStorage.setItem(storageKey, input.value);
             triggerAutoSync();
