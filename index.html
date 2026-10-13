@@ -1595,7 +1595,7 @@
         </div>
         <div>
             <label for="apiKeyInput">Master Key (X-Master-Key):</label>
-            <input type="password" id="apiKeyInput" value="$2a$10$2pvlUVsodrGy58q.RbXMRuTMcfCyGP1C.pm0ndIQ/UmDuEysXOoOG">
+            <input type="password" id="apiKeyInput" value="$2a$10$2pvlUVsodrGy58q.RbXMRuTMcfCyGP1C.pm0ndIQ/UmDuEysXOo0G">
         </div>
         <div class="modal-buttons">
             <button class="modal-btn modal-btn-cancel" id="cancelSettingsBtn">Abbrechen</button>
@@ -1881,8 +1881,8 @@
     
     function getCloudConfig() {
         return {
-            binId: localStorage.getItem('jsonbin_id') || '6abebbf2ac6210605a0a3a4d',
-            apiKey: localStorage.getItem('jsonbin_key') || '$2a$10$2pvlUVsodrGy58q.RbXMRuTMcfCyGP1C.pm0ndIQ/UmDuEysXOo0G'
+            binId: '6abebbf2ac6210605a0a3a4d',
+            apiKey: '$2a$10$povtp3bBXWeBkMxTERvuS.vhBYrtFA/0j.xKEDRx/c/RPCqJjuH6m'
         };
     }
 
@@ -1978,8 +1978,6 @@
     });
 
     saveSettingsBtn.addEventListener('click', () => {
-        localStorage.setItem('jsonbin_id', binIdInput.value.trim());
-        localStorage.setItem('jsonbin_key', apiKeyInput.value.trim());
         settingsModal.classList.remove('open');
         syncWithCloud(true);
     });
