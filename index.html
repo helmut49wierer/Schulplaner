@@ -29,9 +29,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 25px;
-            flex-wrap: nowrap;
+            flex-wrap: wrap;
             background: #e8f4fd;
             padding: 12px 15px;
             border: 2px solid var(--border-color);
@@ -41,8 +41,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            flex-shrink: 1;
-            min-width: 0;
+            flex-wrap: wrap;
         }
         .header-left {
             display: flex;
@@ -106,6 +105,7 @@
             display: flex;
             align-items: center;
             gap: 4px;
+            flex-wrap: wrap;
         }
         .action-pill-btn {
             background: #ffffff;
@@ -130,7 +130,6 @@
             padding: 2px;
             border-radius: 6px;
             gap: 2px;
-            flex-shrink: 0;
         }
         .view-btn {
             background: #34495e;
@@ -160,7 +159,6 @@
             gap: 10px;
             background: transparent;
             padding: 2px 4px;
-            flex-shrink: 0;
         }
         .weather-icon {
             font-size: 1.8rem;
@@ -657,6 +655,28 @@
             text-align: left;
             font-size: 1.05rem;
             font-weight: bold;
+        }
+
+        .weekly-header-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .weekly-header-title {
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: #1e293b;
+        }
+        .weekly-header-sondertermin {
+            background: #fae8ff;
+            border: 1px solid #e879f9;
+            border-radius: 4px;
+            padding: 4px 6px;
+            font-size: 0.85rem;
+            font-weight: normal;
+            color: #86198f;
+            word-break: break-word;
+            margin-top: 2px;
         }
         
         .class-slot-mini {
@@ -1328,6 +1348,10 @@
                 width: 25% !important;
                 vertical-align: top !important;
             }
+            .weekly-header-sondertermin {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
             .class-slot-mini, .weekly-prep-box, .klasse-card, .verteilt-badge-box, .engage-badge-box {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
@@ -1381,7 +1405,8 @@
 
             <div class="sync-settings-group">
                 <button class="action-pill-btn" id="searchBtn" title="Verlauf durchsuchen (Auswertung)">🔍</button>
-                <button class="action-pill-btn" id="syncBtn" title="Manuell mit Cloud synchronisieren">🔄 <span id="syncStatusText">Sync</span></button>
+                <button class="action-pill-btn" id="syncBtn" title="Neueste Daten aus der Cloud laden">📥 Laden</button>
+                <button class="action-pill-btn" id="saveCloudBtn" title="Lokale Daten in die Cloud speichern">💾 Speichern</button>
                 <button class="action-pill-btn" id="settingsBtn" title="Cloud-Zugangsdaten einstellen">⚙</button>
             </div>
         </div>
@@ -1451,16 +1476,12 @@
 
                 <div class="box-card box-fehlzeiten">
                     <div class="box-header">Fehlzeiten</div>
-                    <div class="dynamic-rows-container" id="fehlzeitenContainer">
-                        <!-- Wird per JS dynamisch generiert -->
-                    </div>
+                    <div class="dynamic-rows-container" id="fehlzeitenContainer"></div>
                 </div>
 
                 <div class="box-card box-nacharbeiten">
                     <div class="box-header">Nacharbeiten</div>
-                    <div class="dynamic-rows-container" id="nacharbeitenContainer">
-                        <!-- Wird per JS dynamisch generiert -->
-                    </div>
+                    <div class="dynamic-rows-container" id="nacharbeitenContainer"></div>
                 </div>
 
                 <div class="box-card box-mitnehmen">
@@ -1581,25 +1602,25 @@
         </div>
     </div>
     
-    <div class="save-hint">Eingaben & Tickerkästchen werden lokal & automatisch in der Cloud synchronisiert.</div>
+    <div class="save-hint">Status: <span id="syncStatusText" style="font-weight: bold;">Aktiv</span></div>
 </div>
 
 <!-- Modal für Einstellungen -->
 <div class="modal-overlay" id="settingsModal">
     <div class="modal-box">
-        <h3>Cloud-Synchronisation (JSONBin)</h3>
-        <p>Gib hier deine JSONBin-Daten ein, um zwischen Tablet und Desktop zu synchronisieren.</p>
+        <h3>Cloud-Zugangsdaten (JSONBin)</h3>
+        <p>Gib hier deine Bin ID und deinen Key ein. Mit "OK" werden die Zugangsdaten lokal gespeichert.</p>
         <div>
             <label for="binIdInput">Bin ID:</label>
-            <input type="text" id="binIdInput" value="6abebbf2ac6210605a0a3a4d">
+            <input type="text" id="binIdInput" value="">
         </div>
         <div>
             <label for="apiKeyInput">Master Key (X-Master-Key):</label>
-            <input type="password" id="apiKeyInput" value="$2a$10$tWIETv4ayFd4yDR0nBlk5uLylS.mMahaF3u5sZFWP6KsWD3Yj4ds2">
+            <input type="password" id="apiKeyInput" value="">
         </div>
         <div class="modal-buttons">
             <button class="modal-btn modal-btn-cancel" id="cancelSettingsBtn">Abbrechen</button>
-            <button class="modal-btn modal-btn-save" id="saveSettingsBtn">Speichern & Sync</button>
+            <button class="modal-btn modal-btn-save" id="saveIdOnlyBtn">OK</button>
         </div>
     </div>
 </div>
@@ -1631,6 +1652,14 @@
 </div>
 
 <script>
+    // ================= FESTE STANDARDS UND MASTER BIN ID =================
+    const MASTER_BIN_ID = "6abebbf2ac6210605a0a3a4d";
+    const MASTER_API_KEY = "$2a$10$wN1Qy8B34gA97PspH4qZzOAn2K.I5145bY94q0B2B6L/X55hW";
+
+    // Erzwinge direkt beim Laden des Skripts die richtige Master ID
+    localStorage.setItem('jsonbin_id', MASTER_BIN_ID);
+    localStorage.setItem('jsonbin_key', MASTER_API_KEY);
+
     const numKlassen = 4;
     const container = document.getElementById('klassenContainer');
     
@@ -1818,10 +1847,12 @@
     const settingsBtn = document.getElementById('settingsBtn');
     const settingsModal = document.getElementById('settingsModal');
     const cancelSettingsBtn = document.getElementById('cancelSettingsBtn');
-    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+    const saveIdOnlyBtn = document.getElementById('saveIdOnlyBtn');
     const binIdInput = document.getElementById('binIdInput');
     const apiKeyInput = document.getElementById('apiKeyInput');
+    
     const syncBtn = document.getElementById('syncBtn');
+    const saveCloudBtn = document.getElementById('saveCloudBtn');
     const syncStatusText = document.getElementById('syncStatusText');
 
     const searchBtn = document.getElementById('searchBtn');
@@ -1880,8 +1911,8 @@
     
     function getCloudConfig() {
         return {
-            binId: localStorage.getItem('jsonbin_id') || '6abebbf2ac6210605a0a3a4d',
-            apiKey: localStorage.getItem('jsonbin_key') || '$2a$10$2pvlUVsodrGy58q.RbXMRuTMcfCyGP1C.pm0ndIQ/UmDuEysXOoOG'
+            binId: MASTER_BIN_ID,
+            apiKey: MASTER_API_KEY
         };
     }
 
@@ -1966,9 +1997,8 @@
     }
 
     settingsBtn.addEventListener('click', () => {
-        const config = getCloudConfig();
-        binIdInput.value = config.binId;
-        apiKeyInput.value = config.apiKey;
+        binIdInput.value = MASTER_BIN_ID;
+        apiKeyInput.value = MASTER_API_KEY;
         settingsModal.classList.add('open');
     });
 
@@ -1976,11 +2006,10 @@
         settingsModal.classList.remove('open');
     });
 
-    saveSettingsBtn.addEventListener('click', () => {
+    saveIdOnlyBtn.addEventListener('click', () => {
         localStorage.setItem('jsonbin_id', binIdInput.value.trim());
         localStorage.setItem('jsonbin_key', apiKeyInput.value.trim());
         settingsModal.classList.remove('open');
-        syncWithCloud(true);
     });
 
     searchBtn.addEventListener('click', () => {
@@ -2143,17 +2172,15 @@
         });
     }
 
-    async function syncWithCloud(isManual = false) {
+    // 📥 LADEN: Holt frische Daten aus der Cloud
+    async function loadFromCloud(isManual = false) {
         const config = getCloudConfig();
-        if (!config.binId || !config.apiKey) {
-            if (isManual) alert('Bitte trage zuerst deine Bin ID und deinen Master Key ein.');
-            return;
-        }
 
         syncStatusText.innerText = 'Lade...';
         try {
             const response = await fetch(`https://api.jsonbin.io/v3/b/${config.binId}/latest`, {
-                headers: { 'X-Master-Key': config.apiKey }
+                headers: { 'X-Master-Key': config.apiKey },
+                cache: 'no-store'
             });
             if (response.ok) {
                 const resData = await response.json();
@@ -2162,25 +2189,24 @@
                     for (const key in cloudData) {
                         localStorage.setItem(key, cloudData[key]);
                     }
-                    if (migrateChapterData()) triggerAutoSync();
+                    if (migrateChapterData()) pushToCloud();
                     loadDataForDate(datePicker.value);
                     syncStatusText.innerText = 'Aktiv';
+                    if (isManual) alert('Erfolgreich aus der Cloud geladen!');
                 }
             } else {
                 syncStatusText.innerText = 'Fehler';
+                if (isManual) alert('Fehler beim Laden aus der Cloud (Prüfe Bin ID & Key).');
             }
         } catch (e) {
             syncStatusText.innerText = 'Offline';
-        }
-
-        if (isManual) {
-            pushToCloud();
+            if (isManual) alert('Keine Internetverbindung oder Zugriff blockiert.');
         }
     }
 
-    async function pushToCloud() {
+    // 💾 SPEICHERN: Schickt lokalen Stand in die Cloud
+    async function pushToCloud(isManual = false) {
         const config = getCloudConfig();
-        if (!config.binId || !config.apiKey) return;
 
         syncStatusText.innerText = 'Speichere...';
         const allData = {};
@@ -2202,30 +2228,30 @@
             });
             if (response.ok) {
                 syncStatusText.innerText = 'Aktiv';
+                if (isManual) alert('Erfolgreich in der Cloud gespeichert!');
             } else {
                 syncStatusText.innerText = 'Sync-Fehler';
+                if (isManual) alert('Fehler beim Speichern in der Cloud.');
             }
         } catch (e) {
             syncStatusText.innerText = 'Offline';
+            if (isManual) alert('Keine Internetverbindung.');
         }
     }
 
     function triggerAutoSync() {
-        const config = getCloudConfig();
-        if (!config.binId || !config.apiKey) return;
-
         clearTimeout(syncTimer);
         syncStatusText.innerText = 'Wartet...';
         syncTimer = setTimeout(() => {
-            pushToCloud();
+            pushToCloud(false);
         }, 1500);
     }
 
-    syncBtn.addEventListener('click', () => {
-        syncWithCloud(true);
-    });
+    syncBtn.addEventListener('click', () => loadFromCloud(true));
+    saveCloudBtn.addEventListener('click', () => pushToCloud(true));
 
     function autoResizeTextarea(el) {
+        if (!el) return;
         el.style.height = 'auto';
         el.style.height = (el.scrollHeight) + 'px';
     }
@@ -2834,10 +2860,10 @@
             d.setDate(d.getDate() + 1);
         }
 
-        document.getElementById('thHeaderDi').innerText = daysInWeek.Di ? daysInWeek.Di.label : "Dienstag";
-        document.getElementById('thHeaderMi').innerText = daysInWeek.Mi ? daysInWeek.Mi.label : "Mittwoch";
-        document.getElementById('thHeaderDo').innerText = daysInWeek.Do ? daysInWeek.Do.label : "Donnerstag";
-        document.getElementById('thHeaderFr').innerText = daysInWeek.Fr ? daysInWeek.Fr.label : "Freitag";
+        setWeekHeader('thHeaderDi', daysInWeek.Di ? daysInWeek.Di.label : "Dienstag", daysInWeek.Di ? daysInWeek.Di.dateStr : null);
+        setWeekHeader('thHeaderMi', daysInWeek.Mi ? daysInWeek.Mi.label : "Mittwoch", daysInWeek.Mi ? daysInWeek.Mi.dateStr : null);
+        setWeekHeader('thHeaderDo', daysInWeek.Do ? daysInWeek.Do.label : "Donnerstag", daysInWeek.Do ? daysInWeek.Do.dateStr : null);
+        setWeekHeader('thHeaderFr', daysInWeek.Fr ? daysInWeek.Fr.label : "Freitag", daysInWeek.Fr ? daysInWeek.Fr.dateStr : null);
 
         fillWeekDayCell('weekCellDi', daysInWeek.Di ? daysInWeek.Di.dateStr : null);
         fillWeekDayCell('weekCellMi', daysInWeek.Mi ? daysInWeek.Mi.dateStr : null);
@@ -2845,6 +2871,25 @@
         fillWeekDayCell('weekCellFr', daysInWeek.Fr ? daysInWeek.Fr.dateStr : null);
 
         fillWeekPrepBox(daysInWeek);
+    }
+
+    function setWeekHeader(headerId, labelText, dateStr) {
+        const th = document.getElementById(headerId);
+        let sonderterminText = '';
+        if (dateStr) {
+            sonderterminText = (localStorage.getItem(`planer_${dateStr}_sondertermin`) || '').trim();
+        }
+
+        let html = `
+            <div class="weekly-header-cell">
+                <div class="weekly-header-title">${labelText}</div>
+        `;
+        if (sonderterminText) {
+            html += `<div class="weekly-header-sondertermin">📌 ${sonderterminText}</div>`;
+        }
+        html += `</div>`;
+
+        th.innerHTML = html;
     }
 
     function fillWeekDayCell(cellId, dateStr) {
@@ -3244,7 +3289,8 @@
     }
     migrateChapterData();
 
-    syncWithCloud(false).then(() => {
+    // Beim Starten direkt aus der Cloud laden
+    loadFromCloud(false).then(() => {
         loadDataForDate(datePicker.value);
     });
 
