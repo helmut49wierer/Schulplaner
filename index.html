@@ -1882,7 +1882,7 @@
     function getCloudConfig() {
         return {
             binId: '6abebbf2ac6210605a0a3a4d',
-            apiKey: '$2a$10$povtp3bBXWeBkMxTERvuS.vhBYrtFA/0j.xKEDRx/c/RPCqJjuH6m'
+            apiKey: '$2a$10$2pvlUVsodrGy58q.RbXMRuTMcfCyGP1C.pm0ndIQ/UmDuEysXOo0G'
         };
     }
 
@@ -3012,6 +3012,54 @@
         }
     }
 
+    // Einmalige Bereinigung von bereits in Zukunft verschleppten Einträgen in Fehlzeiten & Nacharbeiten
+    function cleanupFutureDynamicRows() {
+        const todayStr = datePicker.value;
+        ['fehlzeiten', 'nacharbeiten'].forEach(boxType => {
+            const activeTexts = new Set();
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('planer_') && key.includes(`_${boxType}_text_`)) {
+                    const parts = key.split('_');
+                    if (parts.length >= 5) {
+                        const dStr = parts[1];
+                        if (dStr <= todayStr) {
+                            const idx = parts[parts.length - 1];
+                            const state = localStorage.getItem(`planer_${dStr}_${boxType}_state_${idx}`) || 'red';
+                            const text = localStorage.getItem(key);
+                            if (text && text.trim() !== '') {
+                                if (state === 'green' || state === 'off') {
+                                    activeTexts.delete(text.trim());
+                                } else {
+                                    activeTexts.add(text.trim());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('planer_') && key.includes(`_${boxType}_text_`)) {
+                    const parts = key.split('_');
+                    if (parts.length >= 5) {
+                        const dStr = parts[1];
+                        if (dStr > todayStr) {
+                            const text = localStorage.getItem(key);
+                            if (text && !activeTexts.has(text.trim())) {
+                                const idx = parts[parts.length - 1];
+                                localStorage.removeItem(key);
+                                localStorage.removeItem(`planer_${dStr}_${boxType}_state_${idx}`);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Exakte Logik wie bei Vorbereiten (Mitschleppen bis grün)
     function renderDynamicRows(dateStr, boxType, containerElement) {
         containerElement.innerHTML = '';
         
@@ -3137,6 +3185,8 @@
     }
 
     function loadDataForDate(dateStr) {
+        cleanupFutureDynamicRows();
+
         allFields.forEach(field => {
             const fieldKey = field.getAttribute('data-field');
             if (!fieldKey.startsWith('klasse_vorstunde_')) {
@@ -3247,7 +3297,6 @@
     }
     migrateChapterData();
 
-    // Automatisches Laden beim Öffnen der Seite / Browseradresse
     syncWithCloud(false).then(() => {
         loadDataForDate(datePicker.value);
     });
