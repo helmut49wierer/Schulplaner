@@ -2104,7 +2104,7 @@
             const key = localStorage.key(i);
             if (key && key.startsWith(`planer_${currentYearMonth}-`) && key.endsWith('_sondertermin')) {
                 const text = localStorage.getItem(key);
-                if (text && text.trim() !== '') {
+                if (text && text.trim() !== '' && text.trim() !== 'Eintrag...') {
                     const dateStr = key.replace('planer_', '').replace('_sondertermin', '');
                     monthTermine.push({
                         dateStr: dateStr,
@@ -2990,7 +2990,7 @@
     }
 
     function removeTaskFromFuture(boxType, textToRemove, currentDateStr) {
-        if (!textToRemove || !textToRemove.trim()) return;
+        if (!textToRemove || !textToRemove.trim() || textToRemove.trim() === 'Eintrag...') return;
         const targetText = textToRemove.trim();
 
         for (let i = 0; i < localStorage.length; i++) {
@@ -3012,33 +3012,44 @@
         }
     }
 
-    // Einmalige Bereinigung von bereits in Zukunft verschleppten Einträgen in Fehlzeiten & Nacharbeiten
+    // Bereinigung von fälschlicherweise in der Zukunft verschleppten Einträgen
     function cleanupFutureDynamicRows() {
         const todayStr = datePicker.value;
         ['fehlzeiten', 'nacharbeiten'].forEach(boxType => {
-            const activeTexts = new Set();
+            const activeTasks = new Map(); // text -> state ('red' or 'green'/'off')
+
+            // 1. Alle Tage bis heute durchgehen und den finalen Status ermitteln
+            const allDates = [];
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key && key.startsWith('planer_') && key.includes(`_${boxType}_text_`)) {
                     const parts = key.split('_');
                     if (parts.length >= 5) {
                         const dStr = parts[1];
-                        if (dStr <= todayStr) {
-                            const idx = parts[parts.length - 1];
-                            const state = localStorage.getItem(`planer_${dStr}_${boxType}_state_${idx}`) || 'red';
-                            const text = localStorage.getItem(key);
-                            if (text && text.trim() !== '') {
-                                if (state === 'green' || state === 'off') {
-                                    activeTexts.delete(text.trim());
-                                } else {
-                                    activeTexts.add(text.trim());
-                                }
-                            }
+                        if (dStr <= todayStr && !allDates.includes(dStr)) {
+                            allDates.push(dStr);
                         }
                     }
                 }
             }
+            allDates.sort();
 
+            allDates.forEach(dStr => {
+                for (let i = 1; i <= 50; i++) {
+                    const text = localStorage.getItem(`planer_${dStr}_${boxType}_text_${i}`);
+                    const state = localStorage.getItem(`planer_${dStr}_${boxType}_state_${i}`) || 'red';
+                    if (text && text.trim() !== '' && text.trim() !== 'Eintrag...') {
+                        const cleanText = text.trim();
+                        if (state === 'green' || state === 'off') {
+                            activeTasks.set(cleanText, 'resolved');
+                        } else {
+                            activeTasks.set(cleanText, 'red');
+                        }
+                    }
+                }
+            });
+
+            // 2. In der Zukunft aufräumen: Wenn Text bereits erledigt ('resolved') oder gar nicht mehr aktiv, löschen
             for (let i = 0; i < localStorage.length; i++) {
                 const key = localStorage.key(i);
                 if (key && key.startsWith('planer_') && key.includes(`_${boxType}_text_`)) {
@@ -3047,7 +3058,7 @@
                         const dStr = parts[1];
                         if (dStr > todayStr) {
                             const text = localStorage.getItem(key);
-                            if (text && !activeTexts.has(text.trim())) {
+                            if (text && (text.trim() === 'Eintrag...' || activeTasks.get(text.trim()) === 'resolved' || !activeTasks.has(text.trim()))) {
                                 const idx = parts[parts.length - 1];
                                 localStorage.removeItem(key);
                                 localStorage.removeItem(`planer_${dStr}_${boxType}_state_${idx}`);
@@ -3063,7 +3074,7 @@
     function renderDynamicRows(dateStr, boxType, containerElement) {
         containerElement.innerHTML = '';
         
-        const taskMap = new Map();
+        const taskMap = new Map(); // text -> state
         const pastDates = [];
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -3084,17 +3095,18 @@
                 const text = localStorage.getItem(`planer_${dStr}_${boxType}_text_${i}`);
                 const state = localStorage.getItem(`planer_${dStr}_${boxType}_state_${i}`) || 'red';
 
-                if (text && text.trim() !== '') {
+                if (text && text.trim() !== '' && text.trim() !== 'Eintrag...') {
                     const cleanText = text.trim();
                     if (state === 'green' || state === 'off') {
                         taskMap.delete(cleanText);
-                    } else if (state === 'red') {
+                    } else {
                         taskMap.set(cleanText, 'red');
                     }
                 }
             }
         });
 
+        // Alte veraltete Zeilen für diesen Tag leeren und neu befüllen
         for (let i = 1; i <= 50; i++) {
             localStorage.removeItem(`planer_${dateStr}_${boxType}_text_${i}`);
             localStorage.removeItem(`planer_${dateStr}_${boxType}_state_${i}`);
@@ -3136,11 +3148,16 @@
 
         inputEl.addEventListener('input', () => {
             const val = inputEl.value.trim();
-            if (val === '') {
+            if (val === '' || val === 'Eintrag...') {
                 localStorage.removeItem(`planer_${dateStr}_${boxType}_text_${rIndex}`);
                 localStorage.removeItem(`planer_${dateStr}_${boxType}_state_${rIndex}`);
             } else {
                 localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, inputEl.value);
+                if (!localStorage.getItem(`planer_${dateStr}_${boxType}_state_${rIndex}`)) {
+                    localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, 'red');
+                    labelEl.setAttribute('data-state', 'red');
+                    checkboxEl.checked = true;
+                }
             }
             triggerAutoSync();
         });
