@@ -3012,38 +3012,34 @@
         }
     }
 
-    // Korrigierte Funktion: Zieht nur unerledigte Aufgaben (state === 'red') mit in den neuen Tag!
     function renderDynamicRows(dateStr, boxType, containerElement) {
         containerElement.innerHTML = '';
         
-        const taskMap = new Map();
-        const pastDates = [];
+        const dateSet = new Set();
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && key.startsWith('planer_') && key.includes(`_${boxType}_text_`)) {
                 const parts = key.split('_');
                 if (parts.length >= 5) {
                     const taskDate = parts[1];
-                    if (taskDate <= dateStr && !pastDates.includes(taskDate)) {
-                        pastDates.push(taskDate);
+                    if (taskDate <= dateStr) {
+                        dateSet.add(taskDate);
                     }
                 }
             }
         }
-        pastDates.sort();
+        const sortedDates = Array.from(dateSet).sort();
 
-        pastDates.forEach(dStr => {
+        const activeTasksMap = new Map();
+
+        sortedDates.forEach(dStr => {
             for (let i = 1; i <= 50; i++) {
                 const text = localStorage.getItem(`planer_${dStr}_${boxType}_text_${i}`);
                 const state = localStorage.getItem(`planer_${dStr}_${boxType}_state_${i}`) || 'red';
 
                 if (text && text.trim() !== '') {
                     const cleanText = text.trim();
-                    if (state === 'green' || state === 'off') {
-                        taskMap.delete(cleanText);
-                    } else if (state === 'red') {
-                        taskMap.set(cleanText, 'red');
-                    }
+                    activeTasksMap.set(cleanText, state);
                 }
             }
         });
@@ -3054,13 +3050,15 @@
         }
 
         let rIndex = 1;
-        taskMap.forEach((state, text) => {
-            localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, text);
-            localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, 'red');
-            rIndex++;
+        activeTasksMap.forEach((state, text) => {
+            if (state === 'red') {
+                localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, text);
+                localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, 'red');
+                rIndex++;
+            }
         });
 
-        let maxRow = Math.max(1, taskMap.size);
+        let maxRow = Math.max(1, rIndex - 1);
 
         for (let r = 1; r <= maxRow; r++) {
             appendDynamicRow(dateStr, boxType, containerElement, r);
@@ -3248,9 +3246,11 @@
     }
     migrateChapterData();
 
-    syncWithCloud(false).then(() => {
-        loadDataForDate(datePicker.value);
-    });
+    setTimeout(() => {
+        syncWithCloud(false).then(() => {
+            loadDataForDate(datePicker.value);
+        });
+    }, 300);
 
     loadWeather();
 
