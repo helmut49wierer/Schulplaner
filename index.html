@@ -793,7 +793,6 @@
             accent-color: #10b981;
             flex-shrink: 0;
         }
-        /* ANPASSUNG: Schriftgröße auf 1.05rem angeglichen */
         .todo-row input[type="text"] {
             flex-grow: 1;
             padding: 5px 8px;
@@ -842,6 +841,10 @@
             word-break: break-word;
             color: #1e293b;
             font-size: 1.05rem;
+        }
+        .auto-task-item.completed .auto-task-text {
+            text-decoration: line-through;
+            color: #64748b;
         }
         .auto-task-item.overdue .auto-task-text {
             color: #dc2626;
@@ -2420,17 +2423,112 @@
     }
 
     function updateAutoTasks() {
-        // Offene Punkte aus Vorbereiten, Fehlzeiten und Nacharbeiten aus der Vergangenheit mitnehmen
-        fillOverdueTodoAutoBox('vorbereitenList', 'autoTasksContainer');
-        fillOverdueTodoAutoBox('fehlzeitenList', 'fehlzeitenAutoContainer');
-        fillOverdueTodoAutoBox('nacharbeitenList', 'nacharbeitenAutoContainer');
+        const currentDateStr = datePicker.value;
+
+        // 1. Vorbereiten-Einträge aus den Klassen (aktiver Tag)
+        autoTasksContainer.innerHTML = '';
+        let hasVorb = false;
+
+        for (let i = 1; i <= numKlassen; i++) {
+            const nameField = document.querySelector(`[data-field="klasse_name_${i}"]`);
+            const vorbField = document.querySelector(`[data-field="klasse_vorb_${i}"]`);
+            if (vorbField && vorbField.value.trim() !== '') {
+                hasVorb = true;
+                const classNameRaw = nameField && nameField.value.trim() !== '' ? nameField.value.trim() : `Kl. ${i}`;
+                const taskDoneKey = `done_vorb_${currentDateStr}_kl_${i}`;
+                const isChecked = localStorage.getItem(taskDoneKey) === 'true';
+                
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `auto-task-item ${isChecked ? 'completed' : ''}`;
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.checked = isChecked;
+                
+                cb.addEventListener('change', () => {
+                    if (cb.checked) { itemDiv.classList.add('completed'); localStorage.setItem(taskDoneKey, 'true'); }
+                    else { itemDiv.classList.remove('completed'); localStorage.setItem(taskDoneKey, 'false'); }
+                    triggerAutoSync();
+                });
+                
+                const ts = document.createElement('span');
+                ts.className = 'auto-task-text';
+                ts.innerHTML = `<strong>${classNameRaw}:</strong> ${vorbField.value.trim()}`;
+                itemDiv.appendChild(cb);
+                itemDiv.appendChild(ts);
+                autoTasksContainer.appendChild(itemDiv);
+            }
+        }
+
+        // 2. Offene Vorbereiten-Einträge aus den Klassen der VERGANGENHEIT
+        const overdueVorbMap = new Map();
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('planer_') && key.includes('_klasse_vorb_')) {
+                const parts = key.split('_');
+                if (parts.length >= 5) {
+                    const taskDate = parts[1];
+                    const klasseIdx = parts[parts.length - 1];
+                    if (taskDate < currentDateStr) {
+                        const taskText = localStorage.getItem(key);
+                        if (taskText && taskText.trim() !== '') {
+                            const taskDoneKey = `done_vorb_${taskDate}_kl_${klasseIdx}`;
+                            const isDone = localStorage.getItem(taskDoneKey) === 'true';
+                            if (!isDone) {
+                                const nameKey = `planer_${taskDate}_klasse_name_${klasseIdx}`;
+                                const className = localStorage.getItem(nameKey) || `Kl. ${klasseIdx}`;
+                                const dp = taskDate.split('-');
+                                overdueVorbMap.set(taskDoneKey, { taskDoneKey, dateStr: `${dp[2]}.${dp[1]}.`, className: className.trim(), text: taskText.trim() });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Array.from(overdueVorbMap.values()).forEach(task => {
+            hasVorb = true;
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'auto-task-item overdue';
+            const cb = document.createElement('input');
+            cb.type = 'checkbox';
+            cb.checked = false;
+
+            cb.addEventListener('change', () => {
+                if (cb.checked) {
+                    localStorage.setItem(task.taskDoneKey, 'true');
+                    itemDiv.remove();
+                    if (autoTasksContainer.children.length === 0) {
+                        autoTasksContainer.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Vorbereitungen...</div>`;
+                    }
+                }
+                triggerAutoSync();
+            });
+
+            const ts = document.createElement('span');
+            ts.className = 'auto-task-text';
+            ts.innerHTML = `<span class="overdue-badge">⚠️ ${task.dateStr}</span><strong>${task.className}:</strong> ${task.text}`;
+            itemDiv.appendChild(cb);
+            itemDiv.appendChild(ts);
+            autoTasksContainer.appendChild(itemDiv);
+        });
+
+        // 3. Offene Vorbereiten-Zeilen aus der To-Do-Liste der VERGANGENHEIT
+        fillOverdueTodoAutoBox('vorbereitenList', autoTasksContainer);
+
+        if (!hasVorb && autoTasksContainer.children.length === 0) {
+            autoTasksContainer.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Vorbereitungen...</div>`;
+        }
+
+        // Fehlzeiten & Nacharbeiten aus der Vergangenheit
+        fillOverdueTodoAutoBox('fehlzeitenList', fehlzeitenAutoContainer);
+        fillOverdueTodoAutoBox('nacharbeitenList', nacharbeitenAutoContainer);
     }
 
-    function fillOverdueTodoAutoBox(prefixKey, containerId) {
+    function fillOverdueTodoAutoBox(prefixKey, containerEl) {
         const currentDateStr = datePicker.value;
-        const cont = document.getElementById(containerId);
+        const cont = typeof containerEl === 'string' ? document.getElementById(containerEl) : containerEl;
         if (!cont) return;
-        cont.innerHTML = '';
+
         let hasEntries = false;
 
         for (let i = 0; i < localStorage.length; i++) {
@@ -2482,7 +2580,7 @@
             }
         }
 
-        if (!hasEntries) {
+        if (!hasEntries && cont.children.length === 0) {
             cont.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Einträge aus der Vergangenheit...</div>`;
         }
     }
@@ -3113,6 +3211,10 @@
 
                 if (fieldKey.startsWith('klasse_name_') || fieldKey.startsWith('klasse_gemacht_')) {
                     updateMeinTag();
+                }
+
+                if (fieldKey.startsWith('klasse_name_') || fieldKey.startsWith('klasse_vorb_')) {
+                    updateAutoTasks();
                 }
 
                 triggerAutoSync();
