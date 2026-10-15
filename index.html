@@ -2989,9 +2989,11 @@
         }
     }
 
+    // SICHERES LÖSCHEN IN ZUKUNFTSTAGEN (KEYS VORHER SAMMELN)
     function removeTaskFromFuture(boxType, textToRemove, currentDateStr) {
         if (!textToRemove || !textToRemove.trim()) return;
         const targetText = textToRemove.trim();
+        const keysToRemove = [];
 
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -3003,19 +3005,25 @@
                         const val = localStorage.getItem(key);
                         if (val && val.trim() === targetText) {
                             const index = parts[parts.length - 1];
-                            localStorage.removeItem(`planer_${dateStr}_${boxType}_text_${index}`);
-                            localStorage.removeItem(`planer_${dateStr}_${boxType}_state_${index}`);
+                            keysToRemove.push(key);
+                            keysToRemove.push(`planer_${dateStr}_${boxType}_state_${index}`);
                         }
                     }
                 }
             }
         }
+
+        keysToRemove.forEach(k => localStorage.removeItem(k));
     }
 
+    // NICHT-DESTRUKTIVES RENDERN (EIGENE TAGE ERHALTEN + NEUESTER ZUSTAND ZÄHLT)
     function renderDynamicRows(dateStr, boxType, containerElement) {
         containerElement.innerHTML = '';
-        
+
+        // 1. Neuesten Zustand aller Tasks bis zum aktuellen Datum ermitteln
+        const taskLatestState = new Map();
         const dateSet = new Set();
+
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && key.startsWith('planer_') && key.includes(`_${boxType}_text_`)) {
@@ -3030,39 +3038,52 @@
         }
         const sortedDates = Array.from(dateSet).sort();
 
-        const activeTasksMap = new Map();
-
         sortedDates.forEach(dStr => {
             for (let i = 1; i <= 50; i++) {
                 const text = localStorage.getItem(`planer_${dStr}_${boxType}_text_${i}`);
                 const state = localStorage.getItem(`planer_${dStr}_${boxType}_state_${i}`) || 'red';
-
                 if (text && text.trim() !== '') {
-                    const cleanText = text.trim();
-                    activeTasksMap.set(cleanText, state);
+                    taskLatestState.set(text.trim(), state);
                 }
             }
         });
 
+        // 2. Explizite Einträge für den aktuellen Tag laden
+        const currentDayTasks = [];
+        for (let i = 1; i <= 50; i++) {
+            const text = localStorage.getItem(`planer_${dateStr}_${boxType}_text_${i}`);
+            const state = localStorage.getItem(`planer_${dateStr}_${boxType}_state_${i}`);
+            if (text && text.trim() !== '') {
+                currentDayTasks.push({ text: text.trim(), state: state || 'red' });
+            }
+        }
+
+        // 3. Noch offene (rote) Rollout-Tasks hinzufügen, die noch nicht auf diesem Tag stehen
+        const currentTexts = new Set(currentDayTasks.map(t => t.text));
+        const rolloverTasks = [];
+        taskLatestState.forEach((state, text) => {
+            if (state === 'red' && !currentTexts.has(text)) {
+                rolloverTasks.push({ text: text, state: 'red' });
+            }
+        });
+
+        const combinedTasks = [...currentDayTasks, ...rolloverTasks];
+        if (combinedTasks.length === 0) {
+            combinedTasks.push({ text: '', state: 'red' });
+        }
+
+        // 4. In Storage schreiben und Zeilen aufbauen
         for (let i = 1; i <= 50; i++) {
             localStorage.removeItem(`planer_${dateStr}_${boxType}_text_${i}`);
             localStorage.removeItem(`planer_${dateStr}_${boxType}_state_${i}`);
         }
 
-        let rIndex = 1;
-        activeTasksMap.forEach((state, text) => {
-            if (state === 'red') {
-                localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, text);
-                localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, 'red');
-                rIndex++;
-            }
+        combinedTasks.forEach((task, idx) => {
+            const rIndex = idx + 1;
+            localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, task.text);
+            localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, task.state);
+            appendDynamicRow(dateStr, boxType, containerElement, rIndex);
         });
-
-        let maxRow = Math.max(1, rIndex - 1);
-
-        for (let r = 1; r <= maxRow; r++) {
-            appendDynamicRow(dateStr, boxType, containerElement, r);
-        }
     }
 
     function appendDynamicRow(dateStr, boxType, containerElement, rIndex) {
@@ -3376,6 +3397,11 @@
     if (chapterInfoCol) {
         chapterInfoCol.value = localStorage.getItem(`chapter_info_col`) || '';
         autoResizeTextarea(chapterInfoCol);
+        chapterInfoCol.addEventListener('input', () => {
+            localStorage.setItem(`chapter_info_col`, chapterInfoCol.value);
+            autoResizeTextarea(chapterInfoCol);
+            triggerAutoSync();
+        });
     }
 
     allChapterTitles.forEach(titleArea => {
