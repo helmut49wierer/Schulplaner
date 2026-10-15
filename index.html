@@ -395,72 +395,6 @@
             padding: 4px;
         }
 
-        .dynamic-rows-container {
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            background: rgba(255, 255, 255, 0.4);
-        }
-        .dynamic-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .dynamic-checkbox-label {
-            display: inline-flex;
-            align-items: center;
-            cursor: pointer;
-            user-select: none;
-            flex-shrink: 0;
-        }
-        .dynamic-checkbox-label input[type="checkbox"] {
-            display: none;
-        }
-        .custom-dynamic-box {
-            width: 18px;
-            height: 18px;
-            border: 2px solid var(--border-color);
-            border-radius: 4px;
-            background: #ffffff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.15s, border-color 0.15s;
-            font-size: 0.75rem;
-            color: white;
-            font-weight: bold;
-        }
-        .dynamic-checkbox-label[data-state="red"] .custom-dynamic-box {
-            background: #ef4444;
-            border-color: #b91c1c;
-        }
-        .dynamic-checkbox-label[data-state="red"] .custom-dynamic-box::after {
-            content: "✓";
-        }
-        .dynamic-checkbox-label[data-state="green"] .custom-dynamic-box {
-            background: #10b981;
-            border-color: #059669;
-        }
-        .dynamic-checkbox-label[data-state="green"] .custom-dynamic-box::after {
-            content: "✓";
-        }
-        .dynamic-row input[type="text"] {
-            flex-grow: 1;
-            border: none;
-            border-bottom: 1px solid #cbd5e1;
-            padding: 4px 6px;
-            outline: none;
-            font-size: 1.05rem;
-            background: transparent;
-            font-family: inherit;
-            box-sizing: border-box;
-        }
-        .dynamic-row input[type="text"]:focus {
-            border-bottom-color: #3b82f6;
-            background: #f8fafc;
-        }
-
         .class-eval-top-bar {
             display: flex;
             align-items: center;
@@ -829,28 +763,64 @@
             word-break: break-word;
         }
 
+        /* Interactive Todo List Boxes */
         .box-vorbereiten { background: #fee2e2; }
         .box-vorbereiten .box-header { background: #fecaca; }
         
-        .vorbereiten-content-area {
+        .box-fehlzeiten { background: #fae8ff; }
+        .box-fehlzeiten .box-header { background: #f5d0fe; }
+
+        .box-nacharbeiten { background: #e0f2fe; }
+        .box-nacharbeiten .box-header { background: #bae6fd; }
+
+        .todo-list-area {
             display: flex;
             flex-direction: column;
+            padding: 6px;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.3);
         }
-        .vorbereiten-manual {
-            border-bottom: 1px dashed #fca5a5;
+        .todo-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 2px 4px;
         }
-        .vorbereiten-manual textarea {
-            min-height: 38px; 
-            resize: vertical;
+        .todo-row input[type="checkbox"] {
+            width: 19px;
+            height: 19px;
+            cursor: pointer;
+            accent-color: #10b981;
+            flex-shrink: 0;
         }
-        
+        /* ANPASSUNG: Schriftgröße auf 1.05rem angeglichen */
+        .todo-row input[type="text"] {
+            flex-grow: 1;
+            padding: 5px 8px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            background: #ffffff;
+            font-size: 1.05rem;
+            outline: none;
+            font-family: inherit;
+        }
+        .todo-row input[type="text"]:focus {
+            border-color: #3b82f6;
+        }
+        .todo-row.completed input[type="text"] {
+            text-decoration: line-through;
+            color: #64748b;
+            background: #f1f5f9;
+        }
+
         .auto-tasks-container {
-            padding: 10px;
+            padding: 8px 10px;
             display: flex;
             flex-direction: column;
             gap: 6px;
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.2);
             font-size: 1.05rem;
+            border-top: 1px dashed rgba(0, 0, 0, 0.15);
         }
         .auto-task-item {
             display: flex;
@@ -861,23 +831,24 @@
             line-height: 1.3;
         }
         .auto-task-item input[type="checkbox"] {
-            margin-top: 4px;
+            margin-top: 3px;
             cursor: pointer;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             accent-color: #10b981;
         }
         .auto-task-text {
             flex-grow: 1;
             word-break: break-word;
             color: #1e293b;
+            font-size: 1.05rem;
         }
         .auto-task-item.overdue .auto-task-text {
             color: #dc2626;
             font-weight: 600;
         }
         .overdue-badge {
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             background: #fee2e2;
             color: #b91c1c;
             border: 1px solid #fca5a5;
@@ -886,23 +857,10 @@
             margin-right: 4px;
             font-weight: normal;
         }
-        .auto-task-item.completed .auto-task-text {
-            text-decoration: line-through;
-            color: #64748b !important;
-            opacity: 0.7;
-            font-weight: normal !important;
-        }
-        .auto-task-item.completed .overdue-badge {
-            text-decoration: none;
-            background: #f1f5f9;
-            color: #64748b;
-            border-color: #cbd5e1;
-        }
         .auto-tasks-placeholder {
             font-size: 0.95rem;
             color: #94a3b8;
             font-style: italic;
-            padding: 4px 6px;
         }
 
         .box-mitnehmen { background: #fef3c7; }
@@ -910,12 +868,6 @@
 
         .box-privat { background: #dcfce7; }
         .box-privat .box-header { background: #bbf7d0; }
-
-        .box-fehlzeiten { background: #fae8ff; }
-        .box-fehlzeiten .box-header { background: #f5d0fe; }
-
-        .box-nacharbeiten { background: #e0f2fe; }
-        .box-nacharbeiten .box-header { background: #bae6fd; }
 
         .box-idee { background: #ffedd5; }
         .box-idee .box-header { background: #fed7aa; }
@@ -1441,26 +1393,31 @@
                     </div>
                 </div>
 
+                <!-- VORBEREITEN -->
                 <div class="box-card box-vorbereiten">
                     <div class="box-header">Vorbereiten</div>
-                    <div class="vorbereiten-content-area">
-                        <div class="vorbereiten-manual">
-                            <textarea data-field="vorbereitenMain" placeholder="Allgemeine Notizen hier eintragen..."></textarea>
-                        </div>
-                        <div class="auto-tasks-container" id="autoTasksContainer">
-                            <div class="auto-tasks-placeholder">Keine Klassen-Vorbereitungen eingetragen...</div>
-                        </div>
+                    <div class="todo-list-area" id="vorbereitenTodoContainer"></div>
+                    <div class="auto-tasks-container" id="autoTasksContainer">
+                        <div class="auto-tasks-placeholder">Keine offenen Vorbereitungen aus der Vergangenheit...</div>
                     </div>
                 </div>
 
+                <!-- FEHLZEITEN -->
                 <div class="box-card box-fehlzeiten">
                     <div class="box-header">Fehlzeiten</div>
-                    <div class="dynamic-rows-container" id="fehlzeitenContainer"></div>
+                    <div class="todo-list-area" id="fehlzeitenTodoContainer"></div>
+                    <div class="auto-tasks-container" id="fehlzeitenAutoContainer">
+                        <div class="auto-tasks-placeholder">Keine offenen Fehlzeiten aus der Vergangenheit...</div>
+                    </div>
                 </div>
 
+                <!-- NACHARBEITEN -->
                 <div class="box-card box-nacharbeiten">
                     <div class="box-header">Nacharbeiten</div>
-                    <div class="dynamic-rows-container" id="nacharbeitenContainer"></div>
+                    <div class="todo-list-area" id="nacharbeitenTodoContainer"></div>
+                    <div class="auto-tasks-container" id="nacharbeitenAutoContainer">
+                        <div class="auto-tasks-placeholder">Keine offenen Nacharbeiten aus der Vergangenheit...</div>
+                    </div>
                 </div>
 
                 <div class="box-card box-mitnehmen">
@@ -1806,9 +1763,9 @@
     const allChapterInfoCells = document.querySelectorAll('[data-chapter-info-cell]');
 
     const autoTasksContainer = document.getElementById('autoTasksContainer');
+    const fehlzeitenAutoContainer = document.getElementById('fehlzeitenAutoContainer');
+    const nacharbeitenAutoContainer = document.getElementById('nacharbeitenAutoContainer');
     const monatstermineList = document.getElementById('monatstermineList');
-    const nacharbeitenContainer = document.getElementById('nacharbeitenContainer');
-    const fehlzeitenContainer = document.getElementById('fehlzeitenContainer');
     
     const emojiTrigger = document.getElementById('emojiTrigger');
     const emojiMenu = document.getElementById('emojiMenu');
@@ -2158,17 +2115,6 @@
                 const resData = await response.json();
                 const cloudData = resData.record;
                 if (cloudData && typeof cloudData === 'object') {
-                    // Nacharbeiten/Fehlzeiten: Cloud ist maßgeblich. Lokale Schlüssel, die in der Cloud
-                    // nicht (mehr) existieren, entfernen - sonst werden erledigte/gelöschte Einträge
-                    // durch alte Stände wieder "rot" eingespielt.
-                    const staleKeys = [];
-                    for (let i = 0; i < localStorage.length; i++) {
-                        const k = localStorage.key(i);
-                        if (k && k.startsWith('planer_') && (k.includes('_nacharbeiten_') || k.includes('_fehlzeiten_')) && !(k in cloudData)) {
-                            staleKeys.push(k);
-                        }
-                    }
-                    staleKeys.forEach(k => localStorage.removeItem(k));
                     for (const key in cloudData) {
                         localStorage.setItem(key, cloudData[key]);
                     }
@@ -2393,120 +2339,151 @@
         }
     }
 
-    function updateAutoTasks() {
-        autoTasksContainer.innerHTML = '';
-        let hasItems = false;
+    // --- LOGIK FÜR INTERAKTIVE TO-DO LISTEN MIT ENTER-DYNAMIK ---
+    function renderTodoList(prefixKey, containerId, placeholderText) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
         const currentDateStr = datePicker.value;
-        const overdueMap = new Map();
-        
+
+        let rowsData = [];
+        let index = 0;
+        while (true) {
+            const val = localStorage.getItem(`planer_${currentDateStr}_${prefixKey}_t_${index}`);
+            const done = localStorage.getItem(`planer_${currentDateStr}_${prefixKey}_d_${index}`) === 'true';
+            
+            if (val === null) {
+                if (index === 0) {
+                    rowsData.push({ text: '', done: false });
+                }
+                break;
+            }
+            rowsData.push({ text: val, done: done });
+            index++;
+        }
+
+        if (rowsData.length === 0) {
+            rowsData.push({ text: '', done: false });
+        }
+
+        rowsData.forEach((item, idx) => {
+            appendTodoRow(container, prefixKey, idx, item.text, item.done, placeholderText);
+        });
+    }
+
+    function appendTodoRow(container, prefixKey, idx, textValue, isDone, placeholderText) {
+        const currentDateStr = datePicker.value;
+        const rowDiv = document.createElement('div');
+        rowDiv.className = `todo-row ${isDone ? 'completed' : ''}`;
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.checked = isDone;
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = idx === 0 ? placeholderText : '...';
+        input.value = textValue;
+
+        cb.addEventListener('change', () => {
+            if (cb.checked) {
+                rowDiv.classList.add('completed');
+            } else {
+                rowDiv.classList.remove('completed');
+            }
+            localStorage.setItem(`planer_${currentDateStr}_${prefixKey}_d_${idx}`, cb.checked);
+            triggerAutoSync();
+        });
+
+        input.addEventListener('input', () => {
+            localStorage.setItem(`planer_${currentDateStr}_${prefixKey}_t_${idx}`, input.value);
+            triggerAutoSync();
+            updateAutoTasks();
+        });
+
+        // Bei ENTER: Neue Zeile darunter erzeugen und den Fokus direkt hineinlegen
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const nextIdx = container.children.length;
+                appendTodoRow(container, prefixKey, nextIdx, '', false, '...');
+                const newRow = container.children[nextIdx];
+                if (newRow) {
+                    const newInput = newRow.querySelector('input[type="text"]');
+                    if (newInput) newInput.focus();
+                }
+            }
+        });
+
+        rowDiv.appendChild(cb);
+        rowDiv.appendChild(input);
+        container.appendChild(rowDiv);
+    }
+
+    function updateAutoTasks() {
+        // Offene Punkte aus Vorbereiten, Fehlzeiten und Nacharbeiten aus der Vergangenheit mitnehmen
+        fillOverdueTodoAutoBox('vorbereitenList', 'autoTasksContainer');
+        fillOverdueTodoAutoBox('fehlzeitenList', 'fehlzeitenAutoContainer');
+        fillOverdueTodoAutoBox('nacharbeitenList', 'nacharbeitenAutoContainer');
+    }
+
+    function fillOverdueTodoAutoBox(prefixKey, containerId) {
+        const currentDateStr = datePicker.value;
+        const cont = document.getElementById(containerId);
+        if (!cont) return;
+        cont.innerHTML = '';
+        let hasEntries = false;
+
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
-            if (key && key.startsWith('planer_') && key.includes('_klasse_vorb_')) {
+            if (key && key.startsWith('planer_') && key.includes(`_${prefixKey}_t_`)) {
                 const parts = key.split('_');
-                if (parts.length >= 5) {
-                    const taskDate = parts[1];
-                    const klasseIdx = parts[parts.length - 1];
-                    
-                    if (taskDate < currentDateStr) {
-                        const taskText = localStorage.getItem(key);
-                        if (taskText && taskText.trim() !== '') {
-                            const taskKey = `planer_${taskDate}_autotask_${klasseIdx}`;
-                            const isChecked = localStorage.getItem(taskKey) === 'true';
-                            
-                            if (!isChecked) {
-                                const nameKey = `planer_${taskDate}_klasse_name_${klasseIdx}`;
-                                const className = localStorage.getItem(nameKey) || `Kl. ${klasseIdx}`;
-                                
-                                const dateParts = taskDate.split('-');
-                                const formattedDate = `${dateParts[2]}.${dateParts[1]}.`;
+                const taskDate = parts[1];
 
-                                overdueMap.set(taskKey, {
-                                    taskKey: taskKey,
-                                    dateStr: formattedDate,
-                                    className: className.trim(),
-                                    text: taskText.trim()
-                                });
-                            }
+                if (taskDate < currentDateStr) {
+                    const textVal = localStorage.getItem(key);
+                    if (textVal && textVal.trim() !== '') {
+                        const rowIdx = key.split('_t_')[1];
+                        const doneKey = `planer_${taskDate}_${prefixKey}_d_${rowIdx}`;
+                        const isDone = localStorage.getItem(doneKey) === 'true';
+
+                        if (!isDone) {
+                            hasEntries = true;
+                            const dp = taskDate.split('-');
+                            const dateFormatted = `${dp[2]}.${dp[1]}.`;
+
+                            const itemDiv = document.createElement('div');
+                            itemDiv.className = 'auto-task-item overdue';
+
+                            const cb = document.createElement('input');
+                            cb.type = 'checkbox';
+                            cb.checked = false;
+
+                            cb.addEventListener('change', () => {
+                                if (cb.checked) {
+                                    localStorage.setItem(doneKey, 'true');
+                                    itemDiv.remove();
+                                    if (cont.children.length === 0) {
+                                        cont.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Einträge aus der Vergangenheit...</div>`;
+                                    }
+                                }
+                                triggerAutoSync();
+                            });
+
+                            const ts = document.createElement('span');
+                            ts.className = 'auto-task-text';
+                            ts.innerHTML = `<span class="overdue-badge">⚠️ ${dateFormatted}</span>${textVal.trim()}`;
+
+                            itemDiv.appendChild(cb);
+                            itemDiv.appendChild(ts);
+                            cont.appendChild(itemDiv);
                         }
                     }
                 }
             }
         }
 
-        const overdueTasks = Array.from(overdueMap.values());
-        overdueTasks.sort((a, b) => a.taskKey.localeCompare(b.taskKey));
-
-        overdueTasks.forEach(task => {
-            hasItems = true;
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'auto-task-item overdue';
-
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.checked = false;
-
-            checkbox.addEventListener('change', () => {
-                if (checkbox.checked) {
-                    itemDiv.classList.add('completed');
-                    localStorage.setItem(task.taskKey, 'true');
-                } else {
-                    itemDiv.classList.remove('completed');
-                    localStorage.setItem(task.taskKey, 'false');
-                }
-                triggerAutoSync();
-            });
-
-            const textSpan = document.createElement('span');
-            textSpan.className = 'auto-task-text';
-            textSpan.innerHTML = `<span class="overdue-badge">⚠️ ${task.dateStr}</span><strong>${task.className}:</strong> ${task.text}`;
-
-            itemDiv.appendChild(checkbox);
-            itemDiv.appendChild(textSpan);
-            autoTasksContainer.appendChild(itemDiv);
-        });
-
-        for (let i = 1; i <= numKlassen; i++) {
-            const nameField = document.querySelector(`[data-field="klasse_name_${i}"]`);
-            const vorbField = document.querySelector(`[data-field="klasse_vorb_${i}"]`);
-
-            if (vorbField && vorbField.value.trim() !== '') {
-                hasItems = true;
-                const classNameRaw = nameField && nameField.value.trim() !== '' ? nameField.value.trim() : `Kl. ${i}`;
-                const taskText = vorbField.value.trim();
-                
-                const taskKey = `planer_${currentDateStr}_autotask_${i}`;
-                const isChecked = localStorage.getItem(taskKey) === 'true';
-
-                const itemDiv = document.createElement('div');
-                itemDiv.className = `auto-task-item ${isChecked ? 'completed' : ''}`;
-
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.checked = isChecked;
-
-                checkbox.addEventListener('change', () => {
-                    if (checkbox.checked) {
-                        itemDiv.classList.add('completed');
-                        localStorage.setItem(taskKey, 'true');
-                    } else {
-                        itemDiv.classList.remove('completed');
-                        localStorage.setItem(taskKey, 'false');
-                    }
-                    triggerAutoSync();
-                });
-
-                const textSpan = document.createElement('span');
-                textSpan.className = 'auto-task-text';
-                textSpan.innerHTML = `<strong>${classNameRaw}:</strong> ${taskText}`;
-
-                itemDiv.appendChild(checkbox);
-                itemDiv.appendChild(textSpan);
-                autoTasksContainer.appendChild(itemDiv);
-            }
-        }
-
-        if (!hasItems) {
-            autoTasksContainer.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Vorbereitungen...</div>`;
+        if (!hasEntries) {
+            cont.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Einträge aus der Vergangenheit...</div>`;
         }
     }
 
@@ -2968,28 +2945,19 @@
             const dateStr = item.info.dateStr;
             const dayLabel = item.info.label;
 
-            const mainVorb = localStorage.getItem(`planer_${dateStr}_vorbereitenMain`) || '';
-
-            let klassePreps = [];
-            for (let i = 1; i <= numKlassen; i++) {
-                const klName = localStorage.getItem(`planer_${dateStr}_klasse_name_${i}`) || `Kl. ${i}`;
-                const klVorb = localStorage.getItem(`planer_${dateStr}_klasse_vorb_${i}`) || '';
-                if (klVorb.trim()) {
-                    klassePreps.push({ className: klName.trim(), text: klVorb.trim() });
-                }
+            let mainPreps = [];
+            let rIdx = 0;
+            while (true) {
+                const val = localStorage.getItem(`planer_${dateStr}_vorbereitenList_t_${rIdx}`);
+                if (val === null) break;
+                if (val.trim() !== '') mainPreps.push(val.trim());
+                rIdx++;
             }
 
-            if (mainVorb.trim() || klassePreps.length > 0) {
+            if (mainPreps.length > 0) {
                 hasAnyPrep = true;
                 prepHtml += `<div class="weekly-prep-section-title">📅 ${dayLabel}</div>`;
-                
-                if (mainVorb.trim()) {
-                    prepHtml += `<div class="weekly-prep-text"><strong>Allgemein:</strong> ${mainVorb}</div>`;
-                }
-
-                klassePreps.forEach(kp => {
-                    prepHtml += `<div class="weekly-prep-text"><strong>${kp.className}:</strong> ${kp.text}</div>`;
-                });
+                prepHtml += `<div class="weekly-prep-text">${mainPreps.join(', ')}</div>`;
             }
         });
 
@@ -2998,173 +2966,6 @@
         } else {
             prepContainer.innerHTML = prepHtml;
         }
-    }
-
-    // Liest alle Einträge einer Box (nacharbeiten / fehlzeiten) aus dem localStorage:
-    // Rückgabe: { 'YYYY-MM-DD': [ {idx, text, state}, ... ] } (aufsteigend nach Index)
-    function collectDynamicEntries(boxType) {
-        const result = {};
-        const marker = `_${boxType}_text_`;
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (!key || !key.startsWith('planer_') || !key.includes(marker)) continue;
-            const parts = key.split('_');
-            if (parts.length < 5) continue;
-            const dStr = parts[1];
-            const idx = parseInt(parts[parts.length - 1], 10);
-            const text = localStorage.getItem(key);
-            if (!text || text.trim() === '') continue;
-            const state = localStorage.getItem(`planer_${dStr}_${boxType}_state_${idx}`) || 'red';
-            (result[dStr] = result[dStr] || []).push({ idx, text: text.trim(), state });
-        }
-        Object.keys(result).forEach(d => result[d].sort((a, b) => a.idx - b.idx));
-        return result;
-    }
-
-    // Wird aufgerufen, sobald ein Eintrag auf Grün/Aus gesetzt wird:
-    // entfernt alle späteren ROTEN Kopien desselben Eintrags.
-    function removeTaskFromFuture(boxType, textToRemove, currentDateStr) {
-        if (!textToRemove || !textToRemove.trim()) return;
-        const targetText = textToRemove.trim();
-        const entries = collectDynamicEntries(boxType);
-
-        // Erst alle Schlüssel SAMMELN, danach löschen.
-        // (Löschen während der Schleife über localStorage.key(i) verschiebt die Indizes
-        //  und überspringt Einträge -> das war ein Ursprung der "wieder roten" Einträge.)
-        const keysToRemove = [];
-        Object.keys(entries).forEach(dStr => {
-            if (dStr <= currentDateStr) return;
-            entries[dStr].forEach(e => {
-                if (e.text === targetText && e.state === 'red') {
-                    keysToRemove.push(`planer_${dStr}_${boxType}_text_${e.idx}`);
-                    keysToRemove.push(`planer_${dStr}_${boxType}_state_${e.idx}`);
-                }
-            });
-        });
-        keysToRemove.forEach(k => localStorage.removeItem(k));
-    }
-
-    function renderDynamicRows(dateStr, boxType, containerElement) {
-        containerElement.innerHTML = '';
-
-        const entries = collectDynamicEntries(boxType);
-        const dates = Object.keys(entries).filter(d => d <= dateStr).sort();
-
-        // Pro Text zählt der NEUESTE Eintrag (letzter Tag <= dateStr) -> sein Status entscheidet.
-        const latest = new Map(); // text -> { state, date }
-        dates.forEach(d => {
-            entries[d].forEach(e => latest.set(e.text, { state: e.state, date: d }));
-        });
-
-        // Anzeige-Liste:
-        //  - Einträge, die am angezeigten Tag selbst stehen: IMMER behalten (rot/grün/aus)
-        //  - Einträge aus früheren Tagen: nur übernehmen, wenn ihr aktueller Status noch ROT ist
-        // Eigene Einträge des Tages zuerst (stabile Reihenfolge, Zeile springt beim Klicken nicht),
-        // danach neu übernommene Einträge aus früheren Tagen.
-        const rows = [];
-        const seen = new Set();
-        const order = dates.filter(d => d === dateStr).concat(dates.filter(d => d !== dateStr));
-        order.forEach(d => {
-            entries[d].forEach(e => {
-                if (seen.has(e.text)) return;
-                const cur = latest.get(e.text);
-                if (d === dateStr) {
-                    rows.push({ text: e.text, state: e.state });
-                    seen.add(e.text);
-                } else if (cur.state === 'red') {
-                    rows.push({ text: e.text, state: 'red' });
-                    seen.add(e.text);
-                }
-            });
-        });
-        // Tag neu schreiben (kompakte Indizes, Status bleibt erhalten)
-        const before = JSON.stringify((entries[dateStr] || []).map(e => [e.idx, e.text, e.state]));
-        for (let i = 1; i <= 50; i++) {
-            localStorage.removeItem(`planer_${dateStr}_${boxType}_text_${i}`);
-            localStorage.removeItem(`planer_${dateStr}_${boxType}_state_${i}`);
-        }
-        rows.slice(0, 50).forEach((r, k) => {
-            localStorage.setItem(`planer_${dateStr}_${boxType}_text_${k + 1}`, r.text);
-            localStorage.setItem(`planer_${dateStr}_${boxType}_state_${k + 1}`, r.state);
-        });
-
-        const after = JSON.stringify(rows.slice(0, 50).map((r, k) => [k + 1, r.text, r.state]));
-        if (before !== after) triggerAutoSync();
-
-        const maxRow = Math.max(1, Math.min(rows.length, 50));
-        for (let r = 1; r <= maxRow; r++) {
-            appendDynamicRow(dateStr, boxType, containerElement, r);
-        }
-    }
-
-    function appendDynamicRow(dateStr, boxType, containerElement, rIndex) {
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'dynamic-row';
-        rowDiv.setAttribute('data-row-id', rIndex);
-
-        const textVal = localStorage.getItem(`planer_${dateStr}_${boxType}_text_${rIndex}`) || '';
-        const stateVal = localStorage.getItem(`planer_${dateStr}_${boxType}_state_${rIndex}`) || 'red';
-
-        rowDiv.innerHTML = `
-            <label class="dynamic-checkbox-label" data-state="${stateVal}" title="Klicken zum Umschalten (Rot / Grün / Aus)">
-                <input type="checkbox" ${stateVal !== 'off' ? 'checked' : ''}>
-                <span class="custom-dynamic-box"></span>
-            </label>
-            <input type="text" data-dynamic-type="${boxType}" data-dynamic-index="${rIndex}" value="${textVal}" placeholder="Eintrag...">
-        `;
-
-        const inputEl = rowDiv.querySelector('input[type="text"]');
-        const labelEl = rowDiv.querySelector('.dynamic-checkbox-label');
-        const checkboxEl = rowDiv.querySelector('input[type="checkbox"]');
-
-        inputEl.addEventListener('input', () => {
-            const val = inputEl.value.trim();
-            if (val === '') {
-                localStorage.removeItem(`planer_${dateStr}_${boxType}_text_${rIndex}`);
-                localStorage.removeItem(`planer_${dateStr}_${boxType}_state_${rIndex}`);
-            } else {
-                localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, inputEl.value);
-            }
-            triggerAutoSync();
-        });
-
-        inputEl.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const allRows = containerElement.querySelectorAll('.dynamic-row');
-                const nextRowIdx = allRows.length + 1;
-                appendDynamicRow(dateStr, boxType, containerElement, nextRowIdx);
-                const nextInput = containerElement.querySelector(`[data-dynamic-type="${boxType}"][data-dynamic-index="${nextRowIdx}"]`);
-                if (nextInput) nextInput.focus();
-            }
-        });
-
-        labelEl.addEventListener('click', (e) => {
-            e.preventDefault();
-            let currentState = labelEl.getAttribute('data-state') || 'red';
-            let nextState = 'red';
-
-            if (currentState === 'red') {
-                nextState = 'green';
-            } else if (currentState === 'green') {
-                nextState = 'off';
-            } else {
-                nextState = 'red';
-            }
-
-            labelEl.setAttribute('data-state', nextState);
-            checkboxEl.checked = (nextState !== 'off');
-            localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, nextState);
-            
-            if (nextState === 'green' || nextState === 'off') {
-                const textVal = inputEl.value;
-                removeTaskFromFuture(boxType, textVal, dateStr);
-            }
-
-            triggerAutoSync();
-        });
-
-        containerElement.appendChild(rowDiv);
     }
 
     function loadDataForDate(dateStr) {
@@ -3178,9 +2979,6 @@
                 autoResizeTextarea(field);
             }
         });
-
-        renderDynamicRows(dateStr, 'nacharbeiten', nacharbeitenContainer);
-        renderDynamicRows(dateStr, 'fehlzeiten', fehlzeitenContainer);
 
         allUntisFields.forEach(checkbox => {
             const uKey = checkbox.getAttribute('data-untis-field');
@@ -3242,6 +3040,10 @@
             cell.value = localStorage.getItem(storageKey) || '';
             autoResizeTextarea(cell);
         });
+
+        renderTodoList('vorbereitenList', 'vorbereitenTodoContainer', 'Eintrag hinzufügen...');
+        renderTodoList('fehlzeitenList', 'fehlzeitenTodoContainer', 'Fehlzeit eintragen...');
+        renderTodoList('nacharbeitenList', 'nacharbeitenTodoContainer', 'Nacharbeit eintragen...');
 
         updateVorstunden(dateStr);
         updateMeinTag();
@@ -3311,10 +3113,6 @@
 
                 if (fieldKey.startsWith('klasse_name_') || fieldKey.startsWith('klasse_gemacht_')) {
                     updateMeinTag();
-                }
-
-                if (fieldKey.startsWith('klasse_name_') || fieldKey.startsWith('klasse_vorb_') || fieldKey === 'vorbereitenMain') {
-                    updateAutoTasks();
                 }
 
                 triggerAutoSync();
@@ -3408,7 +3206,6 @@
     if (chapterInfoCol) {
         chapterInfoCol.value = localStorage.getItem(`chapter_info_col`) || '';
         autoResizeTextarea(chapterInfoCol);
-        // Hinzugefügter Listener für die Info-Spalten-Kopfzeile:
         chapterInfoCol.addEventListener('input', () => {
             localStorage.setItem(`chapter_info_col`, chapterInfoCol.value);
             autoResizeTextarea(chapterInfoCol);
