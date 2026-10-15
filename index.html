@@ -2158,6 +2158,17 @@
                 const resData = await response.json();
                 const cloudData = resData.record;
                 if (cloudData && typeof cloudData === 'object') {
+                    // Nacharbeiten/Fehlzeiten: Cloud ist maßgeblich. Lokale Schlüssel, die in der Cloud
+                    // nicht (mehr) existieren, entfernen - sonst werden erledigte/gelöschte Einträge
+                    // durch alte Stände wieder "rot" eingespielt.
+                    const staleKeys = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const k = localStorage.key(i);
+                        if (k && k.startsWith('planer_') && (k.includes('_nacharbeiten_') || k.includes('_fehlzeiten_')) && !(k in cloudData)) {
+                            staleKeys.push(k);
+                        }
+                    }
+                    staleKeys.forEach(k => localStorage.removeItem(k));
                     for (const key in cloudData) {
                         localStorage.setItem(key, cloudData[key]);
                     }
@@ -2989,101 +3000,101 @@
         }
     }
 
-    // SICHERES LÖSCHEN IN ZUKUNFTSTAGEN (KEYS VORHER SAMMELN)
+    // Liest alle Einträge einer Box (nacharbeiten / fehlzeiten) aus dem localStorage:
+    // Rückgabe: { 'YYYY-MM-DD': [ {idx, text, state}, ... ] } (aufsteigend nach Index)
+    function collectDynamicEntries(boxType) {
+        const result = {};
+        const marker = `_${boxType}_text_`;
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!key || !key.startsWith('planer_') || !key.includes(marker)) continue;
+            const parts = key.split('_');
+            if (parts.length < 5) continue;
+            const dStr = parts[1];
+            const idx = parseInt(parts[parts.length - 1], 10);
+            const text = localStorage.getItem(key);
+            if (!text || text.trim() === '') continue;
+            const state = localStorage.getItem(`planer_${dStr}_${boxType}_state_${idx}`) || 'red';
+            (result[dStr] = result[dStr] || []).push({ idx, text: text.trim(), state });
+        }
+        Object.keys(result).forEach(d => result[d].sort((a, b) => a.idx - b.idx));
+        return result;
+    }
+
+    // Wird aufgerufen, sobald ein Eintrag auf Grün/Aus gesetzt wird:
+    // entfernt alle späteren ROTEN Kopien desselben Eintrags.
     function removeTaskFromFuture(boxType, textToRemove, currentDateStr) {
         if (!textToRemove || !textToRemove.trim()) return;
         const targetText = textToRemove.trim();
+        const entries = collectDynamicEntries(boxType);
+
+        // Erst alle Schlüssel SAMMELN, danach löschen.
+        // (Löschen während der Schleife über localStorage.key(i) verschiebt die Indizes
+        //  und überspringt Einträge -> das war ein Ursprung der "wieder roten" Einträge.)
         const keysToRemove = [];
-
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith('planer_') && key.includes(`_${boxType}_text_`)) {
-                const parts = key.split('_');
-                if (parts.length >= 5) {
-                    const dateStr = parts[1];
-                    if (dateStr > currentDateStr) {
-                        const val = localStorage.getItem(key);
-                        if (val && val.trim() === targetText) {
-                            const index = parts[parts.length - 1];
-                            keysToRemove.push(key);
-                            keysToRemove.push(`planer_${dateStr}_${boxType}_state_${index}`);
-                        }
-                    }
+        Object.keys(entries).forEach(dStr => {
+            if (dStr <= currentDateStr) return;
+            entries[dStr].forEach(e => {
+                if (e.text === targetText && e.state === 'red') {
+                    keysToRemove.push(`planer_${dStr}_${boxType}_text_${e.idx}`);
+                    keysToRemove.push(`planer_${dStr}_${boxType}_state_${e.idx}`);
                 }
-            }
-        }
-
+            });
+        });
         keysToRemove.forEach(k => localStorage.removeItem(k));
     }
 
-    // NICHT-DESTRUKTIVES RENDERN (EIGENE TAGE ERHALTEN + NEUESTER ZUSTAND ZÄHLT)
     function renderDynamicRows(dateStr, boxType, containerElement) {
         containerElement.innerHTML = '';
 
-        // 1. Neuesten Zustand aller Tasks bis zum aktuellen Datum ermitteln
-        const taskLatestState = new Map();
-        const dateSet = new Set();
+        const entries = collectDynamicEntries(boxType);
+        const dates = Object.keys(entries).filter(d => d <= dateStr).sort();
 
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith('planer_') && key.includes(`_${boxType}_text_`)) {
-                const parts = key.split('_');
-                if (parts.length >= 5) {
-                    const taskDate = parts[1];
-                    if (taskDate <= dateStr) {
-                        dateSet.add(taskDate);
-                    }
-                }
-            }
-        }
-        const sortedDates = Array.from(dateSet).sort();
-
-        sortedDates.forEach(dStr => {
-            for (let i = 1; i <= 50; i++) {
-                const text = localStorage.getItem(`planer_${dStr}_${boxType}_text_${i}`);
-                const state = localStorage.getItem(`planer_${dStr}_${boxType}_state_${i}`) || 'red';
-                if (text && text.trim() !== '') {
-                    taskLatestState.set(text.trim(), state);
-                }
-            }
+        // Pro Text zählt der NEUESTE Eintrag (letzter Tag <= dateStr) -> sein Status entscheidet.
+        const latest = new Map(); // text -> { state, date }
+        dates.forEach(d => {
+            entries[d].forEach(e => latest.set(e.text, { state: e.state, date: d }));
         });
 
-        // 2. Explizite Einträge für den aktuellen Tag laden
-        const currentDayTasks = [];
-        for (let i = 1; i <= 50; i++) {
-            const text = localStorage.getItem(`planer_${dateStr}_${boxType}_text_${i}`);
-            const state = localStorage.getItem(`planer_${dateStr}_${boxType}_state_${i}`);
-            if (text && text.trim() !== '') {
-                currentDayTasks.push({ text: text.trim(), state: state || 'red' });
-            }
-        }
-
-        // 3. Noch offene (rote) Rollout-Tasks hinzufügen, die noch nicht auf diesem Tag stehen
-        const currentTexts = new Set(currentDayTasks.map(t => t.text));
-        const rolloverTasks = [];
-        taskLatestState.forEach((state, text) => {
-            if (state === 'red' && !currentTexts.has(text)) {
-                rolloverTasks.push({ text: text, state: 'red' });
-            }
+        // Anzeige-Liste:
+        //  - Einträge, die am angezeigten Tag selbst stehen: IMMER behalten (rot/grün/aus)
+        //  - Einträge aus früheren Tagen: nur übernehmen, wenn ihr aktueller Status noch ROT ist
+        // Eigene Einträge des Tages zuerst (stabile Reihenfolge, Zeile springt beim Klicken nicht),
+        // danach neu übernommene Einträge aus früheren Tagen.
+        const rows = [];
+        const seen = new Set();
+        const order = dates.filter(d => d === dateStr).concat(dates.filter(d => d !== dateStr));
+        order.forEach(d => {
+            entries[d].forEach(e => {
+                if (seen.has(e.text)) return;
+                const cur = latest.get(e.text);
+                if (d === dateStr) {
+                    rows.push({ text: e.text, state: e.state });
+                    seen.add(e.text);
+                } else if (cur.state === 'red') {
+                    rows.push({ text: e.text, state: 'red' });
+                    seen.add(e.text);
+                }
+            });
         });
-
-        const combinedTasks = [...currentDayTasks, ...rolloverTasks];
-        if (combinedTasks.length === 0) {
-            combinedTasks.push({ text: '', state: 'red' });
-        }
-
-        // 4. In Storage schreiben und Zeilen aufbauen
+        // Tag neu schreiben (kompakte Indizes, Status bleibt erhalten)
+        const before = JSON.stringify((entries[dateStr] || []).map(e => [e.idx, e.text, e.state]));
         for (let i = 1; i <= 50; i++) {
             localStorage.removeItem(`planer_${dateStr}_${boxType}_text_${i}`);
             localStorage.removeItem(`planer_${dateStr}_${boxType}_state_${i}`);
         }
-
-        combinedTasks.forEach((task, idx) => {
-            const rIndex = idx + 1;
-            localStorage.setItem(`planer_${dateStr}_${boxType}_text_${rIndex}`, task.text);
-            localStorage.setItem(`planer_${dateStr}_${boxType}_state_${rIndex}`, task.state);
-            appendDynamicRow(dateStr, boxType, containerElement, rIndex);
+        rows.slice(0, 50).forEach((r, k) => {
+            localStorage.setItem(`planer_${dateStr}_${boxType}_text_${k + 1}`, r.text);
+            localStorage.setItem(`planer_${dateStr}_${boxType}_state_${k + 1}`, r.state);
         });
+
+        const after = JSON.stringify(rows.slice(0, 50).map((r, k) => [k + 1, r.text, r.state]));
+        if (before !== after) triggerAutoSync();
+
+        const maxRow = Math.max(1, Math.min(rows.length, 50));
+        for (let r = 1; r <= maxRow; r++) {
+            appendDynamicRow(dateStr, boxType, containerElement, r);
+        }
     }
 
     function appendDynamicRow(dateStr, boxType, containerElement, rIndex) {
@@ -3397,6 +3408,7 @@
     if (chapterInfoCol) {
         chapterInfoCol.value = localStorage.getItem(`chapter_info_col`) || '';
         autoResizeTextarea(chapterInfoCol);
+        // Hinzugefügter Listener für die Info-Spalten-Kopfzeile:
         chapterInfoCol.addEventListener('input', () => {
             localStorage.setItem(`chapter_info_col`, chapterInfoCol.value);
             autoResizeTextarea(chapterInfoCol);
