@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="de">
 <head>
     <meta charset="UTF-8">
@@ -2403,7 +2403,6 @@
             updateAutoTasks();
         });
 
-        // Bei ENTER: Neue Zeile darunter erzeugen und den Fokus direkt hineinlegen
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 e.preventDefault();
@@ -2459,7 +2458,7 @@
             }
         }
 
-        // 2. Offene Vorbereiten-Einträge aus den Klassen der VERGANGENHEIT
+        // 2. Offene Vorbereiten-Einträge aus den Klassen der VERGANGENHEIT (Dedupliziert per Map/Set)
         const overdueVorbMap = new Map();
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -2477,7 +2476,8 @@
                                 const nameKey = `planer_${taskDate}_klasse_name_${klasseIdx}`;
                                 const className = localStorage.getItem(nameKey) || `Kl. ${klasseIdx}`;
                                 const dp = taskDate.split('-');
-                                overdueVorbMap.set(taskDoneKey, { taskDoneKey, dateStr: `${dp[2]}.${dp[1]}.`, className: className.trim(), text: taskText.trim() });
+                                const uniqueId = `${taskDate}_${className.trim()}_${taskText.trim()}`;
+                                overdueVorbMap.set(uniqueId, { taskDoneKey, dateStr: `${dp[2]}.${dp[1]}.`, className: className.trim(), text: taskText.trim() });
                             }
                         }
                     }
@@ -2519,7 +2519,7 @@
             autoTasksContainer.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Vorbereitungen...</div>`;
         }
 
-        // Fehlzeiten & Nacharbeiten aus der Vergangenheit
+        // Fehlzeiten & Nacharbeiten aus der Vergangenheit (mit automatischer Deduplizierung)
         fillOverdueTodoAutoBox('fehlzeitenList', fehlzeitenAutoContainer);
         fillOverdueTodoAutoBox('nacharbeitenList', nacharbeitenAutoContainer);
     }
@@ -2529,7 +2529,9 @@
         const cont = typeof containerEl === 'string' ? document.getElementById(containerEl) : containerEl;
         if (!cont) return;
 
+        cont.innerHTML = ''; // Container vor dem Rendern komplett leeren
         let hasEntries = false;
+        const addedEntries = new Set(); // Verhindert jegliche Vervielfachung durch Set-Deduplizierung
 
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -2545,6 +2547,10 @@
                         const isDone = localStorage.getItem(doneKey) === 'true';
 
                         if (!isDone) {
+                            const uniqueIdentifier = `${taskDate}_${textVal.trim()}`;
+                            if (addedEntries.has(uniqueIdentifier)) continue;
+                            addedEntries.add(uniqueIdentifier);
+
                             hasEntries = true;
                             const dp = taskDate.split('-');
                             const dateFormatted = `${dp[2]}.${dp[1]}.`;
@@ -2580,7 +2586,7 @@
             }
         }
 
-        if (!hasEntries && cont.children.length === 0) {
+        if (!hasEntries) {
             cont.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Einträge aus der Vergangenheit...</div>`;
         }
     }
