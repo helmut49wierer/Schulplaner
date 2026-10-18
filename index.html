@@ -930,17 +930,17 @@
             text-align: center;
         }
         .klasse-room-badge {
-            margin-top: 8px;           /* Direkt unter dem Klassennamen platzieren */
-    margin-bottom: auto;
-    background: #ef4444;       /* Rot */
-    color: #ffffff;            /* Weiße Schrift */
-    font-weight: 800;          /* Extra fett */
-    font-size: 1.15rem;        /* Größere Schriftart */
-    padding: 4px 10px;         /* Etwas mehr Abstand innen */
-    border-radius: 5px;
-    box-shadow: 2px 2px 0px rgba(44, 62, 80, 0.2);
-    display: none;
-    text-align: center;
+            margin-top: 8px;
+            margin-bottom: auto;
+            background: #ef4444;
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 1.15rem;
+            padding: 4px 10px;
+            border-radius: 5px;
+            box-shadow: 2px 2px 0px rgba(44, 62, 80, 0.2);
+            display: none;
+            text-align: center;
         }
         .klasse-lines {
             padding: 8px;
@@ -2561,24 +2561,27 @@
             autoTasksContainer.appendChild(itemDiv);
         });
 
-        // 3. Offene Vorbereiten-Zeilen aus der To-Do-Liste der VERGANGENHEIT
-        fillOverdueTodoAutoBox('vorbereitenList', autoTasksContainer);
+        // 3. Offene Vorbereiten-Zeilen aus der To-Do-Liste der VERGANGENHEIT (Wichtig: clear = false, damit Klassen-Einträge nicht überschrieben werden!)
+        fillOverdueTodoAutoBox('vorbereitenList', autoTasksContainer, false);
 
+        // Wenn weder heute Klassen-Vorbereitungen da sind noch in der Container-Liste etwas steht
         if (!hasVorb && autoTasksContainer.children.length === 0) {
-            autoTasksContainer.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Vorbereitungen...</div>`;
+            autoTasksContainer.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Vorbereitungen aus der Vergangenheit...</div>`;
         }
 
-        // Fehlzeiten & Nacharbeiten aus der Vergangenheit (mit Set-Deduplizierung)
-        fillOverdueTodoAutoBox('fehlzeitenList', fehlzeitenAutoContainer);
-        fillOverdueTodoAutoBox('nacharbeitenList', nacharbeitenAutoContainer);
+        // Fehlzeiten & Nacharbeiten aus der Vergangenheit (mit Standard clear = true)
+        fillOverdueTodoAutoBox('fehlzeitenList', fehlzeitenAutoContainer, true);
+        fillOverdueTodoAutoBox('nacharbeitenList', nacharbeitenAutoContainer, true);
     }
 
-    function fillOverdueTodoAutoBox(prefixKey, containerEl) {
+    function fillOverdueTodoAutoBox(prefixKey, containerEl, clear = true) {
         const currentDateStr = datePicker.value;
         const cont = typeof containerEl === 'string' ? document.getElementById(containerEl) : containerEl;
         if (!cont) return;
 
-        cont.innerHTML = '';
+        if (clear) {
+            cont.innerHTML = '';
+        }
         let hasEntries = false;
         const addedEntries = new Set();
 
@@ -2635,7 +2638,7 @@
             }
         }
 
-        if (!hasEntries) {
+        if (clear && !hasEntries) {
             cont.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Einträge aus der Vergangenheit...</div>`;
         }
     }
