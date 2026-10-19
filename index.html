@@ -653,6 +653,17 @@
             align-items: center;
             gap: 6px;
         }
+        .weekly-nach-header {
+            background: #bae6fd;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 1rem;
+            color: #1e293b;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
         .weekly-prep-content {
             padding: 10px;
             font-size: 0.9rem;
@@ -669,7 +680,15 @@
             padding-bottom: 2px;
             margin-top: 4px;
         }
-        .weekly-prep-section-title:first-child {
+        .weekly-nach-section-title {
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #0369a1;
+            border-bottom: 1px dashed #7dd3fc;
+            padding-bottom: 2px;
+            margin-top: 4px;
+        }
+        .weekly-prep-section-title:first-child, .weekly-nach-section-title:first-child {
             margin-top: 0;
         }
         .weekly-prep-text {
@@ -855,6 +874,16 @@
             background: #fee2e2;
             color: #b91c1c;
             border: 1px solid #fca5a5;
+            padding: 1px 5px;
+            border-radius: 4px;
+            margin-right: 4px;
+            font-weight: normal;
+        }
+        .overdue-badge-nach {
+            font-size: 0.85rem;
+            background: #e0f2fe;
+            color: #0369a1;
+            border: 1px solid #bae6fd;
             padding: 1px 5px;
             border-radius: 4px;
             margin-right: 4px;
@@ -1518,10 +1547,18 @@
                 </tr>
                 <tr class="weekly-prep-row">
                     <td colspan="4">
-                        <div class="weekly-prep-box">
-                            <div class="weekly-prep-header">📌 Vorbereitung (Wochenübersicht)</div>
-                            <div class="weekly-prep-content" id="weeklyPrepContainer">
-                                <div class="weekly-empty-day">Keine Vorbereitungen in dieser Woche eingetragen...</div>
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 5px;">
+                            <div class="weekly-prep-box">
+                                <div class="weekly-prep-header">📌 Vorbereitung (Wochenübersicht)</div>
+                                <div class="weekly-prep-content" id="weeklyPrepContainer">
+                                    <div class="weekly-empty-day">Keine Vorbereitungen in dieser Woche eingetragen...</div>
+                                </div>
+                            </div>
+                            <div class="weekly-prep-box">
+                                <div class="weekly-nach-header">📌 Nacharbeiten (Wochenübersicht)</div>
+                                <div class="weekly-prep-content" id="weeklyNachContainer">
+                                    <div class="weekly-empty-day">Keine Nacharbeiten in dieser Woche eingetragen...</div>
+                                </div>
                             </div>
                         </div>
                     </td>
@@ -2561,20 +2598,19 @@
             autoTasksContainer.appendChild(itemDiv);
         });
 
-        // 3. Offene Vorbereiten-Zeilen aus der To-Do-Liste der VERGANGENHEIT (Wichtig: clear = false, damit Klassen-Einträge nicht überschrieben werden!)
-        fillOverdueTodoAutoBox('vorbereitenList', autoTasksContainer, false);
+        // 3. Offene Vorbereiten-Zeilen aus der To-Do-Liste der VERGANGENHEIT
+        fillOverdueTodoAutoBox('vorbereitenList', autoTasksContainer, false, 'overdue-badge');
 
-        // Wenn weder heute Klassen-Vorbereitungen da sind noch in der Container-Liste etwas steht
         if (!hasVorb && autoTasksContainer.children.length === 0) {
             autoTasksContainer.innerHTML = `<div class="auto-tasks-placeholder">Keine offenen Vorbereitungen aus der Vergangenheit...</div>`;
         }
 
-        // Fehlzeiten & Nacharbeiten aus der Vergangenheit (mit Standard clear = true)
-        fillOverdueTodoAutoBox('fehlzeitenList', fehlzeitenAutoContainer, true);
-        fillOverdueTodoAutoBox('nacharbeitenList', nacharbeitenAutoContainer, true);
+        // Fehlzeiten & Nacharbeiten aus der Vergangenheit einbinden
+        fillOverdueTodoAutoBox('fehlzeitenList', fehlzeitenAutoContainer, true, 'overdue-badge');
+        fillOverdueTodoAutoBox('nacharbeitenList', nacharbeitenAutoContainer, true, 'overdue-badge-nach');
     }
 
-    function fillOverdueTodoAutoBox(prefixKey, containerEl, clear = true) {
+    function fillOverdueTodoAutoBox(prefixKey, containerEl, clear = true, badgeClass = 'overdue-badge') {
         const currentDateStr = datePicker.value;
         const cont = typeof containerEl === 'string' ? document.getElementById(containerEl) : containerEl;
         if (!cont) return;
@@ -2627,7 +2663,7 @@
 
                             const ts = document.createElement('span');
                             ts.className = 'auto-task-text';
-                            ts.innerHTML = `<span class="overdue-badge">⚠️ ${dateFormatted}</span>${textVal.trim()}`;
+                            ts.innerHTML = `<span class="${badgeClass}">⚠️ ${dateFormatted}</span>${textVal.trim()}`;
 
                             itemDiv.appendChild(cb);
                             itemDiv.appendChild(ts);
@@ -2992,6 +3028,7 @@
         fillWeekDayCell('weekCellFr', daysInWeek.Fr ? daysInWeek.Fr.dateStr : null);
 
         fillWeekPrepBox(daysInWeek);
+        fillWeekNachBox(daysInWeek);
     }
 
     function fillWeekDayCell(cellId, dateStr) {
@@ -3106,18 +3143,58 @@
             const dayLabel = item.info.label;
 
             let mainPreps = [];
+
+            // 1. Reguläre To-Dos des Tages
             let rIdx = 0;
             while (true) {
                 const val = localStorage.getItem(`planer_${dateStr}_vorbereitenList_t_${rIdx}`);
                 if (val === null) break;
-                if (val.trim() !== '') mainPreps.push(val.trim());
+                if (val.trim() !== '') {
+                    const isDone = localStorage.getItem(`planer_${dateStr}_vorbereitenList_d_${rIdx}`) === 'true';
+                    if (!isDone) {
+                        mainPreps.push(val.trim());
+                    }
+                }
                 rIdx++;
+            }
+
+            // 2. Klassen-Vorbereitungen des Tages
+            for (let i = 1; i <= numKlassen; i++) {
+                const vVal = localStorage.getItem(`planer_${dateStr}_klasse_vorb_${i}`);
+                const klName = localStorage.getItem(`planer_${dateStr}_klasse_name_${i}`) || `Kl. ${i}`;
+                if (vVal && vVal.trim() !== '') {
+                    const isDone = localStorage.getItem(`done_vorb_${dateStr}_kl_${i}`) === 'true';
+                    if (!isDone) {
+                        mainPreps.push(`<strong>${klName}:</strong> ${vVal.trim()}`);
+                    }
+                }
+            }
+
+            // 3. Überfällige Vorbereitungen aus allen vergangenen Tagen bis zu diesem Datum
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('planer_') && key.includes('_vorbereitenList_t_')) {
+                    const parts = key.split('_');
+                    const taskDate = parts[1];
+                    if (taskDate < dateStr) {
+                        const val = localStorage.getItem(key);
+                        if (val && val.trim() !== '') {
+                            const rowIdx = key.split('_t_')[1];
+                            const isDone = localStorage.getItem(`planer_${taskDate}_vorbereitenList_d_${rowIdx}`) === 'true';
+                            if (!isDone) {
+                                const dp = taskDate.split('-');
+                                const dateFormatted = `${dp[2]}.${dp[1]}.`;
+                                mainPreps.push(`<span style="color:#b91c1c; font-weight:bold;">⚠️ ${dateFormatted}</span> ${val.trim()}`);
+                            }
+                        }
+                    }
+                }
             }
 
             if (mainPreps.length > 0) {
                 hasAnyPrep = true;
                 prepHtml += `<div class="weekly-prep-section-title">📅 ${dayLabel}</div>`;
-                prepHtml += `<div class="weekly-prep-text">${mainPreps.join(', ')}</div>`;
+                prepHtml += `<div class="weekly-prep-text">${mainPreps.join('<br>')}</div>`;
             }
         });
 
@@ -3125,6 +3202,76 @@
             prepContainer.innerHTML = `<div class="weekly-empty-day">Keine Vorbereitungen in dieser Woche eingetragen...</div>`;
         } else {
             prepContainer.innerHTML = prepHtml;
+        }
+    }
+
+    function fillWeekNachBox(daysInWeek) {
+        const nachContainer = document.getElementById('weeklyNachContainer');
+        nachContainer.innerHTML = '';
+
+        let hasAnyNach = false;
+        let nachHtml = '';
+
+        const dayEntries = [
+            { key: 'Di', label: 'Dienstag', info: daysInWeek.Di },
+            { key: 'Mi', label: 'Mittwoch', info: daysInWeek.Mi },
+            { key: 'Do', label: 'Donnerstag', info: daysInWeek.Do },
+            { key: 'Fr', label: 'Freitag', info: daysInWeek.Fr }
+        ];
+
+        dayEntries.forEach(item => {
+            if (!item.info) return;
+            const dateStr = item.info.dateStr;
+            const dayLabel = item.info.label;
+
+            let mainNachs = [];
+
+            // 1. Reguläre Nacharbeiten des aktuellen Tages
+            let rIdx = 0;
+            while (true) {
+                const val = localStorage.getItem(`planer_${dateStr}_nacharbeitenList_t_${rIdx}`);
+                if (val === null) break;
+                if (val.trim() !== '') {
+                    const isDone = localStorage.getItem(`planer_${dateStr}_nacharbeitenList_d_${rIdx}`) === 'true';
+                    if (!isDone) {
+                        mainNachs.push(val.trim());
+                    }
+                }
+                rIdx++;
+            }
+
+            // 2. Überfällige Nacharbeiten aus der Vergangenheit (vor diesem Datum)
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('planer_') && key.includes('_nacharbeitenList_t_')) {
+                    const parts = key.split('_');
+                    const taskDate = parts[1];
+                    if (taskDate < dateStr) {
+                        const val = localStorage.getItem(key);
+                        if (val && val.trim() !== '') {
+                            const rowIdx = key.split('_t_')[1];
+                            const isDone = localStorage.getItem(`planer_${taskDate}_nacharbeitenList_d_${rowIdx}`) === 'true';
+                            if (!isDone) {
+                                const dp = taskDate.split('-');
+                                const dateFormatted = `${dp[2]}.${dp[1]}.`;
+                                mainNachs.push(`<span style="color:#0369a1; font-weight:bold;">⚠️ ${dateFormatted}</span> ${val.trim()}`);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (mainNachs.length > 0) {
+                hasAnyNach = true;
+                nachHtml += `<div class="weekly-nach-section-title">📅 ${dayLabel}</div>`;
+                nachHtml += `<div class="weekly-prep-text">${mainNachs.join('<br>')}</div>`;
+            }
+        });
+
+        if (!hasAnyNach) {
+            nachContainer.innerHTML = `<div class="weekly-empty-day">Keine Nacharbeiten in dieser Woche eingetragen...</div>`;
+        } else {
+            nachContainer.innerHTML = nachHtml;
         }
     }
 
