@@ -1379,6 +1379,7 @@
             display: none;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
 </head>
 <body>
 
@@ -2228,7 +2229,11 @@
             });
             if (response.ok) {
                 const resData = await response.json();
-                const cloudData = resData.record;
+                let cloudData = resData.record;
+                if (cloudData && cloudData.compressedData && typeof LZString !== 'undefined') {
+                    const decompressed = LZString.decompressFromUTF16(cloudData.compressedData);
+                    cloudData = decompressed ? JSON.parse(decompressed) : {};
+                }
                 if (cloudData && typeof cloudData === 'object') {
                     for (const key in cloudData) {
                         localStorage.setItem(key, cloudData[key]);
@@ -2262,6 +2267,10 @@
             }
         }
 
+        const payload = (typeof LZString !== 'undefined')
+            ? { compressedData: LZString.compressToUTF16(JSON.stringify(allData)) }
+            : allData;
+
         try {
             const response = await fetch(`https://api.jsonbin.io/v3/b/${config.binId}`, {
                 method: 'PUT',
@@ -2269,7 +2278,7 @@
                     'Content-Type': 'application/json',
                     'X-Master-Key': config.apiKey
                 },
-                body: JSON.stringify(allData)
+                body: JSON.stringify(payload)
             });
             if (response.ok) {
                 syncStatusText.innerText = 'Status: OK';
